@@ -1,0 +1,405 @@
+package com.guatex.igconfiguraciones.formularios;
+
+import com.guatex.igconfiguraciones.archivos.A_Servicios;
+import com.guatex.igconfiguraciones.entidades.E_Servicio;
+import com.guatex.igconfiguraciones.entidades.E_Impresora;
+import com.guatex.igconfiguraciones.entidades.E_Usuario;
+import com.guatex.igconfiguraciones.loggs.ArchivoLogs;
+import com.guatex.igconfiguraciones.principal.GTXConfiguracionIG;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+
+/**
+ *
+ * @author ESTEFANIECM
+ */
+public final class P_Servicios extends javax.swing.JPanel {
+
+    /**
+     * Creates new form P_Servicio
+     */
+    public P_Servicios() {
+        initComponents();
+        iniciarPanel();
+    }
+    DefaultListModel modelo;
+    DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
+    A_Servicios opciones = new A_Servicios();
+
+    private void iniciarPanel() {
+        cargarListaImpresoras();
+        cargarListaUsuarios();
+        ((DefaultTableCellRenderer) this.tbServicios.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
+        this.tbServicios.getModel().addTableModelListener(new TableModelListener() {
+            @Override
+            public void tableChanged(TableModelEvent e) {
+                if (e.getColumn() == 3) {
+                    validarSeleccionEliminar();
+                }
+            }
+        });
+        cargarTablasServicios();
+    }
+
+    private void cargarTablasServicios() {
+        DefaultTableModel modeloTabla = (DefaultTableModel) tbServicios.getModel();
+        modeloTabla.setRowCount(0);
+        tcr.setHorizontalAlignment(SwingConstants.CENTER);
+        for (E_Servicio servicio : GTXConfiguracionIG.ListaServicios) {
+
+            for (E_Impresora imp : GTXConfiguracionIG.ListaImpresoras) {
+                if (imp.getIdImpresora().equals(servicio.getIdImpresora())) {
+                    for (E_Usuario usr : GTXConfiguracionIG.ListaUsuarios) {
+                        if (usr.getIdRegistroUsuario().equals(servicio.getIdUsuario())) {
+                            modeloTabla.addRow(new Object[]{usr.toString(), imp.getNombre()+" - "+imp.getIp(), servicio.getFechaServicio(), false, servicio});
+                        }
+                    }
+                }
+            }
+
+        }
+
+        for (int i = 0; i < tbServicios.getColumnCount(); i++) {
+            tbServicios.getColumnModel().getColumn(i).setCellRenderer(tcr);
+        }
+        tbServicios.getColumnModel().getColumn(3).setCellRenderer(tbServicios.getDefaultRenderer(Boolean.class));
+        tbServicios.getColumnModel().getColumn(3).setCellEditor(tbServicios.getDefaultEditor(Boolean.class));
+        tbServicios.getColumnModel().getColumn(4).setMinWidth(0);
+        tbServicios.getColumnModel().getColumn(4).setMaxWidth(0);
+        tbServicios.getColumnModel().getColumn(4).setWidth(0);
+    }
+
+    private void validarSeleccionEliminar() {
+        DefaultTableModel modeloTabla = (DefaultTableModel) tbServicios.getModel();
+        int filas = modeloTabla.getRowCount();
+        int servicioEliminar = 0;
+
+        // Buscar casilla seleccionada seleccionadas
+        for (int i = 0; i < filas; i++) {
+            Boolean isSelected = (Boolean) modeloTabla.getValueAt(i, 3);
+            if (isSelected != null && isSelected) {
+                servicioEliminar = i;
+                break;
+            }
+        }
+        String impresora = (String) modeloTabla.getValueAt(servicioEliminar, 0);
+        String usuario = (String) modeloTabla.getValueAt(servicioEliminar, 1);
+        int respuesta = JOptionPane.showConfirmDialog(null,
+                "Al eliminar el servicio, el usuario [ " + usuario + " ] no tendrá conexión a la impresora [ " + impresora + " ]\n"
+                + "¿Desea eliminarlo?",
+                "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+        if (respuesta == JOptionPane.YES_OPTION) {
+            E_Servicio servicio = (E_Servicio) modeloTabla.getValueAt(servicioEliminar, 4);
+            GTXConfiguracionIG.ListaServicios.remove(servicio);
+            boolean actualizaArchivo = new A_Servicios().guardarServiciosArchivo();
+            if (actualizaArchivo) {
+                ArchivoLogs.getInstance().grabaLogFileAdministrador("------ El servicio del usuario [" + usuario + " - " + impresora + "] fue eliminado.", false);
+                opciones.realizarBKarchivo();
+                cargarTablasServicios();
+            }
+        } else {
+            cargarTablasServicios();
+        }
+
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        btnMSGuardar = new javax.swing.JButton();
+        jSeparator2 = new javax.swing.JSeparator();
+        cmbImpresora = new javax.swing.JComboBox<>();
+        cmbUsuarios = new javax.swing.JComboBox<>();
+        jLabel4 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tbServicios = new javax.swing.JTable();
+
+        setBackground(new java.awt.Color(238, 238, 238));
+        setMinimumSize(new java.awt.Dimension(510, 525));
+        setPreferredSize(new java.awt.Dimension(510, 525));
+
+        jPanel1.setBackground(new java.awt.Color(238, 238, 238));
+        jPanel1.setMinimumSize(new java.awt.Dimension(500, 498));
+
+        jLabel1.setBackground(new java.awt.Color(238, 238, 238));
+        jLabel1.setFont(new java.awt.Font("Verdana", 1, 16)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/guatex/igconfiguraciones/imagenes/relacionar.png"))); // NOI18N
+        jLabel1.setText("Configuración de servicio de impresión");
+        jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        jLabel1.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
+
+        jLabel2.setBackground(new java.awt.Color(238, 238, 238));
+        jLabel2.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel2.setText("Impresora:");
+        jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        jLabel2.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
+
+        jLabel3.setBackground(new java.awt.Color(238, 238, 238));
+        jLabel3.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel3.setText("Usuario:");
+        jLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        jLabel3.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
+
+        btnMSGuardar.setBackground(new java.awt.Color(255, 255, 255));
+        btnMSGuardar.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
+        btnMSGuardar.setForeground(new java.awt.Color(51, 51, 51));
+        btnMSGuardar.setText("Guardar");
+        btnMSGuardar.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnMSGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnMSGuardar.setDefaultCapable(false);
+        btnMSGuardar.setFocusPainted(false);
+        btnMSGuardar.setFocusable(false);
+        btnMSGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnMSGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMSGuardarActionPerformed(evt);
+            }
+        });
+
+        cmbImpresora.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        cmbImpresora.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione una impresora" }));
+        cmbImpresora.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+
+        cmbUsuarios.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        cmbUsuarios.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione un usuario" }));
+        cmbUsuarios.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+
+        jLabel4.setBackground(new java.awt.Color(238, 238, 238));
+        jLabel4.setFont(new java.awt.Font("Verdana", 1, 16)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel4.setText("Servicios de impresión asignados:");
+        jLabel4.setToolTipText("");
+        jLabel4.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        jLabel4.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
+
+        tbServicios.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
+        tbServicios.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Usuario", "Impresora", "Fecha ", "Eliminar servicio", "s"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, true, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tbServicios.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        tbServicios.setRowHeight(30);
+        tbServicios.setSelectionBackground(new java.awt.Color(204, 204, 204));
+        jScrollPane1.setViewportView(tbServicios);
+        if (tbServicios.getColumnModel().getColumnCount() > 0) {
+            tbServicios.getColumnModel().getColumn(0).setResizable(false);
+            tbServicios.getColumnModel().getColumn(0).setPreferredWidth(70);
+            tbServicios.getColumnModel().getColumn(1).setResizable(false);
+            tbServicios.getColumnModel().getColumn(1).setPreferredWidth(50);
+            tbServicios.getColumnModel().getColumn(2).setResizable(false);
+            tbServicios.getColumnModel().getColumn(2).setPreferredWidth(15);
+            tbServicios.getColumnModel().getColumn(3).setResizable(false);
+            tbServicios.getColumnModel().getColumn(3).setPreferredWidth(45);
+            tbServicios.getColumnModel().getColumn(4).setMinWidth(0);
+            tbServicios.getColumnModel().getColumn(4).setPreferredWidth(0);
+            tbServicios.getColumnModel().getColumn(4).setMaxWidth(0);
+        }
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(jLabel1))
+                            .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel4))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(30, 30, 30)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(16, 16, 16)
+                                        .addComponent(cmbUsuarios, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(btnMSGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                            .addComponent(jLabel2)
+                                            .addGap(16, 16, 16)
+                                            .addComponent(cmbImpresora, javax.swing.GroupLayout.PREFERRED_SIZE, 356, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jLabel1)
+                .addGap(6, 6, 6)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbUsuarios, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbImpresora, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(21, 21, 21)
+                .addComponent(btnMSGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27)
+                .addComponent(jLabel4)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 490, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btnMSGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMSGuardarActionPerformed
+        // TODO add your handling code here:
+        if (cmbImpresora.getSelectedItem() instanceof String) {
+            JOptionPane.showMessageDialog(null, "Debe seleccionar una impresora.", "Alerta", JOptionPane.ERROR_MESSAGE);
+        } else {
+            if (cmbUsuarios.getSelectedItem() instanceof String) {
+                JOptionPane.showMessageDialog(null, "Debe seleccionar un usuario.", "Alerta", JOptionPane.ERROR_MESSAGE);
+            } else {
+                E_Impresora impSelect = (E_Impresora) cmbImpresora.getSelectedItem();
+                E_Usuario usrSelect = (E_Usuario) cmbUsuarios.getSelectedItem();
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                Date fechaActual = new Date();
+                String fechaServicio = sdf.format(fechaActual);
+                String idServicio = E_Servicio.generaIDservicio();
+                String idImpresora = impSelect.getIdImpresora();
+                String idUsuario = usrSelect.getIdRegistroUsuario();
+                E_Servicio servicio = new E_Servicio();
+                servicio.setIdServicio(idServicio);
+                servicio.setIdImpresora(idImpresora);
+                servicio.setIdUsuario(idUsuario);
+                servicio.setFechaServicio(fechaServicio);
+                boolean agregado = AgregaServicio(servicio);
+                if (agregado) {
+                    boolean actualizaArchivo = opciones.guardarServiciosArchivo();
+                    if (actualizaArchivo) {
+                        ArchivoLogs.getInstance().grabaLogFileAdministrador("------ Se asignó la impresora [" + impSelect.getNombre() + "] al usuario [" + usrSelect.toString() + "]", false);
+                        JOptionPane.showMessageDialog(this, "El servicio de impresión fue agregado exitosamente.", "Servicio impresión", JOptionPane.INFORMATION_MESSAGE);
+                        opciones.realizarBKarchivo();
+                        limpiarCampos();
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "El usuario [" + usrSelect.toString() + "] ya cuenta con una impresora asignada para el servicio de impresión.", "Alerta", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }//GEN-LAST:event_btnMSGuardarActionPerformed
+
+    private void limpiarCampos() {
+        cmbImpresora.setSelectedIndex(0);
+        cmbUsuarios.setSelectedIndex(0);
+        cargarTablasServicios();
+    }
+
+    private void cargarListaImpresoras() {
+        for (E_Impresora impresora : GTXConfiguracionIG.ListaImpresoras) {
+            cmbImpresora.addItem(impresora);
+        }
+    }
+
+    private void cargarListaUsuarios() {
+        for (E_Usuario usuario : GTXConfiguracionIG.ListaUsuarios) {
+            cmbUsuarios.addItem(usuario);
+        }
+    }
+
+    private boolean AgregaServicio(E_Servicio nuevoServicio) {
+        for (E_Servicio s : GTXConfiguracionIG.ListaServicios) {
+            if (s.getIdUsuario().equals(nuevoServicio.getIdUsuario())) {
+                return false;
+            }
+        }
+        GTXConfiguracionIG.ListaServicios.add(nuevoServicio);
+        return true;
+    }
+
+    private boolean VentanaVisible() {
+        return super.isVisible();
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnMSGuardar;
+    private javax.swing.JComboBox<Object> cmbImpresora;
+    private javax.swing.JComboBox<Object> cmbUsuarios;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JTable tbServicios;
+    // End of variables declaration//GEN-END:variables
+}
