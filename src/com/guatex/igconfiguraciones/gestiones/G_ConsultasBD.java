@@ -43,7 +43,7 @@ public class G_ConsultasBD {
             httppost.setEntity(entity);
             try (CloseableHttpResponse response = httpclient.execute(httppost)) {
                 String jsonRespuesta = EntityUtils.toString(response.getEntity());
-                System.out.println("Respuesta: "+jsonRespuesta);
+                System.out.println("Respuesta: " + jsonRespuesta);
                 listaGuiasxImprimir = gson.fromJson(jsonRespuesta, new TypeToken<ArrayList<E_ImpresionesUsuario>>() {
                 }.getType());
 

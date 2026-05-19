@@ -54,9 +54,8 @@ public class G_Impresora {
                 Socket socket = new Socket(ipImpresora, 9100);
                 OutputStream out = socket.getOutputStream()) {
 
-            out.write(ZPLguia.toString().getBytes());
+            out.write(ZPLguia.toString().getBytes("UTF-8"));
             out.flush();
-
             System.out.println("IMPRESO");
 
             return true;
