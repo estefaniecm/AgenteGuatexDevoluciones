@@ -7,7 +7,7 @@ package com.guatex.igconfiguraciones.entidades;
 public class E_ActualizarImpresion {
 
     private String noguia;
-    private String ip;
+    private String impreso;
 
     public String getNoguia() {
         return noguia;
@@ -17,11 +17,11 @@ public class E_ActualizarImpresion {
         this.noguia = noguia;
     }
 
-    public String getIp() {
-        return ip;
+    public String getImpreso() {
+        return impreso;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
+    public void setImpreso(String imp) {
+        this.impreso = imp;
     }
 }

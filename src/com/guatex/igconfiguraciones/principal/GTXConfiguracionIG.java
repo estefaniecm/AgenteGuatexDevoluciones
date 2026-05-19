@@ -54,7 +54,7 @@ public class GTXConfiguracionIG {
     public static void main(String[] args) {
         String agentePID = getCurrentPID();
         ArchivoLogs.getInstance().grabaLogFileAdministrador("---------------------------     INICIA AGENTE GUATEX    ---------------------------", false);
-        
+
         if (!correInstanciaAgente(agentePID)) {
             if (SystemTray.isSupported()) {
                 SystemTray tray = SystemTray.getSystemTray();
@@ -171,25 +171,19 @@ public class GTXConfiguracionIG {
         A_Impresoras aImpresoras = new A_Impresoras();
         boolean guardarIMP = aImpresoras.guardarImpresorasArchivo();
         if (guardarIMP) {
-            if (ListaImpresoras.size() != totalImp) {
-                aImpresoras.realizarBKarchivo();
-            }
+            aImpresoras.realizarBKarchivo();
         }
 
         A_Usuarios aUsuarios = new A_Usuarios();
         boolean guardarUSR = aUsuarios.guardarUsuariosArchivo();
         if (guardarUSR) {
-            if (ListaUsuarios.size() != totalUsr) {
-                aUsuarios.realizarBKarchivo();
-            }
+            aUsuarios.realizarBKarchivo();
         }
 
         A_Servicios aServicios = new A_Servicios();
         boolean guardarSRV = aServicios.guardarServiciosArchivo();
         if (guardarSRV) {
-            if (ListaServicios.size() != totalSrv) {
-                aServicios.realizarBKarchivo();
-            }
+            aServicios.realizarBKarchivo();
         }
         liberarLock();
     }

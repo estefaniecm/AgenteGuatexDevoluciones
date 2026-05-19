@@ -35,15 +35,21 @@ public final class P_Impresoras extends javax.swing.JPanel {
     A_Impresoras opciones = new A_Impresoras();
 
     private void iniciarPanel() {
-        ((DefaultTableCellRenderer) this.tbImpresoras.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
+        ((DefaultTableCellRenderer) this.tbImpresoras.getTableHeader().getDefaultRenderer())
+                .setHorizontalAlignment(SwingConstants.CENTER);
+
         this.tbImpresoras.getModel().addTableModelListener(new TableModelListener() {
             @Override
             public void tableChanged(TableModelEvent e) {
-                if (e.getColumn() == 2) {
+                if (e.getColumn() == 3) {
                     validarSeleccionEliminar();
                 }
             }
         });
+
+        lblDestino.setVisible(false);
+        txtDestinoImpresora.setVisible(false);
+
         cargarTablaImpresoras();
     }
 
@@ -52,16 +58,17 @@ public final class P_Impresoras extends javax.swing.JPanel {
         modeloTabla.setRowCount(0);
         tcr.setHorizontalAlignment(SwingConstants.CENTER);
         for (E_Impresora impresora : GTXConfiguracionIG.ListaImpresoras) {
-            modeloTabla.addRow(new Object[]{impresora.getNombre(), impresora.getIp(), false, impresora.getIdImpresora()});
+            modeloTabla.addRow(new Object[]{impresora.getNombre(), impresora.getTipo(), impresora.getDestino(), false, impresora.getIdImpresora()});
         }
         for (int i = 0; i < tbImpresoras.getColumnCount(); i++) {
             tbImpresoras.getColumnModel().getColumn(i).setCellRenderer(tcr);
         }
-        tbImpresoras.getColumnModel().getColumn(2).setCellRenderer(tbImpresoras.getDefaultRenderer(Boolean.class));
-        tbImpresoras.getColumnModel().getColumn(2).setCellEditor(tbImpresoras.getDefaultEditor(Boolean.class));
-        tbImpresoras.getColumnModel().getColumn(3).setMinWidth(0);
-        tbImpresoras.getColumnModel().getColumn(3).setMaxWidth(0);
-        tbImpresoras.getColumnModel().getColumn(3).setWidth(0);
+        tbImpresoras.getColumnModel().getColumn(3).setCellRenderer(tbImpresoras.getDefaultRenderer(Boolean.class));
+        tbImpresoras.getColumnModel().getColumn(3).setCellEditor(tbImpresoras.getDefaultEditor(Boolean.class));
+
+        tbImpresoras.getColumnModel().getColumn(4).setMinWidth(0);
+        tbImpresoras.getColumnModel().getColumn(4).setMaxWidth(0);
+        tbImpresoras.getColumnModel().getColumn(4).setWidth(0);
     }
 
     private void validarSeleccionEliminar() {
@@ -70,13 +77,13 @@ public final class P_Impresoras extends javax.swing.JPanel {
         int impresoraEliminar = 0;
         // Buscar casilla seleccionada seleccionadas
         for (int i = 0; i < filas; i++) {
-            Boolean isSelected = (Boolean) modeloTabla.getValueAt(i, 2);
+            Boolean isSelected = (Boolean) modeloTabla.getValueAt(i, 3);
             if (isSelected != null && isSelected) {
                 impresoraEliminar = i;
             }
         }
         String nombreImpresora = (String) modeloTabla.getValueAt(impresoraEliminar, 0);
-        String idImpresora = (String) modeloTabla.getValueAt(impresoraEliminar, 3);
+        String idImpresora = (String) modeloTabla.getValueAt(impresoraEliminar, 4);
 
         if (!existeImpresoraEnServicios(idImpresora)) {
             int respuesta = JOptionPane.showConfirmDialog(null,
@@ -118,13 +125,16 @@ public final class P_Impresoras extends javax.swing.JPanel {
         jSeparator1 = new javax.swing.JSeparator();
         jLabel2 = new javax.swing.JLabel();
         txtNombreImpresora = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
+        lblDestino = new javax.swing.JLabel();
         btnMIGuardar = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JSeparator();
         jLabel4 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbImpresoras = new javax.swing.JTable();
-        txtIPImpresora = new javax.swing.JTextField();
+        txtDestinoImpresora = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        btnRed = new javax.swing.JRadioButton();
+        btnUSB = new javax.swing.JRadioButton();
 
         setBackground(new java.awt.Color(238, 238, 238));
         setMinimumSize(new java.awt.Dimension(510, 525));
@@ -146,19 +156,19 @@ public final class P_Impresoras extends javax.swing.JPanel {
         jLabel2.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(51, 51, 51));
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel2.setText("Nombre de la impresora: ");
+        jLabel2.setText("Descripción impresora:");
         jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         jLabel2.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
 
         txtNombreImpresora.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
 
-        jLabel3.setBackground(new java.awt.Color(238, 238, 238));
-        jLabel3.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel3.setText("Dirección IP:");
-        jLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        jLabel3.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
+        lblDestino.setBackground(new java.awt.Color(238, 238, 238));
+        lblDestino.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
+        lblDestino.setForeground(new java.awt.Color(51, 51, 51));
+        lblDestino.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblDestino.setText("Dirección IP:");
+        lblDestino.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        lblDestino.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
 
         btnMIGuardar.setBackground(new java.awt.Color(255, 255, 255));
         btnMIGuardar.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
@@ -190,14 +200,14 @@ public final class P_Impresoras extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Nombre impresora", "Dirección IP", "Eliminar impresora", "id"
+                "Nombre impresora", "Tipo", "Destino impresión", "Eliminar impresora", "id"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.Boolean.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, true, false
+                false, false, false, true, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -222,12 +232,43 @@ public final class P_Impresoras extends javax.swing.JPanel {
             tbImpresoras.getColumnModel().getColumn(0).setResizable(false);
             tbImpresoras.getColumnModel().getColumn(1).setResizable(false);
             tbImpresoras.getColumnModel().getColumn(2).setResizable(false);
-            tbImpresoras.getColumnModel().getColumn(3).setMinWidth(0);
-            tbImpresoras.getColumnModel().getColumn(3).setPreferredWidth(0);
-            tbImpresoras.getColumnModel().getColumn(3).setMaxWidth(0);
+            tbImpresoras.getColumnModel().getColumn(3).setResizable(false);
+            tbImpresoras.getColumnModel().getColumn(4).setMinWidth(0);
+            tbImpresoras.getColumnModel().getColumn(4).setPreferredWidth(0);
+            tbImpresoras.getColumnModel().getColumn(4).setMaxWidth(0);
         }
 
-        txtIPImpresora.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        txtDestinoImpresora.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+
+        jLabel5.setBackground(new java.awt.Color(238, 238, 238));
+        jLabel5.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel5.setText("Tipo de conexión:");
+        jLabel5.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        jLabel5.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
+
+        grupoConexion.add(btnRed);
+        btnRed.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        btnRed.setText("Red");
+        btnRed.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnRed.setFocusPainted(false);
+        btnRed.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRedActionPerformed(evt);
+            }
+        });
+
+        grupoConexion.add(btnUSB);
+        btnUSB.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        btnUSB.setText("USB");
+        btnUSB.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnUSB.setFocusPainted(false);
+        btnUSB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUSBActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -235,28 +276,42 @@ public final class P_Impresoras extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addGap(356, 356, 356)
-                            .addComponent(btnMIGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addGap(19, 19, 19)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel2)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGap(4, 4, 4)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(txtIPImpresora)
-                                .addComponent(txtNombreImpresora))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
+                        .addGap(19, 19, 19)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
+                            .addComponent(lblDestino, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel4)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(4, 4, 4)
+                                .addComponent(txtNombreImpresora))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnRed, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnUSB, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtDestinoImpresora))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnMIGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -268,18 +323,25 @@ public final class P_Impresoras extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtNombreImpresora, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(11, 11, 11)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtIPImpresora, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(11, 11, 11)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnRed, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnUSB, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblDestino, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtDestinoImpresora, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addComponent(btnMIGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
+                .addGap(18, 18, 18)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(13, 13, 13)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel4)
-                .addGap(19, 19, 19)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(15, 15, 15))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -301,50 +363,120 @@ public final class P_Impresoras extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnMIGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMIGuardarActionPerformed
-        // TODO add your handling code here:
         String id = E_Impresora.generaIDimpresora();
         String nombre = txtNombreImpresora.getText().trim();
-        String direccionIP = txtIPImpresora.getText().trim();
-        if (!nombre.isEmpty() || !direccionIP.isEmpty()) {
-                E_Impresora impresora = new E_Impresora();
-                impresora.setIdImpresora(id);
-                impresora.setNombre(nombre);
-                impresora.setIp(direccionIP);
-                boolean agregado = AgregaImpresora(impresora);
-                if (agregado) {
-                    boolean actualizaArchivo = opciones.guardarImpresorasArchivo();
-                    if (actualizaArchivo) {
-                        ArchivoLogs.getInstance().grabaLogFileAdministrador("------ La impresora [" + impresora.getNombre() + "] fue agregada.", false);
-                        JOptionPane.showMessageDialog(this, "Impresora agregada exitosamente", "Impresoras", JOptionPane.INFORMATION_MESSAGE);
-                        opciones.realizarBKarchivo();
-                        limpiarCampos();
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(this, "La impresora con IP '" + direccionIP + "' ya existe.", "Impresoras", JOptionPane.ERROR_MESSAGE);
-                }
+        String destino = txtDestinoImpresora.getText().trim();
+
+        String tipo = getTipoConexion(grupoConexion);
+        if (nombre.isEmpty() || destino.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "Debe ingresar el nombre descriptivo y "
+                    + (tipo.equals("Red") ? "la dirección IP." : "el nombre exacto de la impresora USB."),
+                    "Alerta", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if ("Red".equals(tipo) && !esIPvalida(destino)) {
+            JOptionPane.showMessageDialog(this,
+                    "La dirección IP ingresada no tiene un formato válido.",
+                    "Alerta", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        E_Impresora impresora = new E_Impresora();
+        impresora.setIdImpresora(id);
+        impresora.setNombre(nombre);
+        impresora.setTipo(tipo);
+        impresora.setDestino(destino);
+
+        boolean agregado = AgregaImpresora(impresora);
+        if (agregado) {
+            boolean actualizado = opciones.guardarImpresorasArchivo();
+            if (actualizado) {
+                ArchivoLogs.getInstance().grabaLogFileAdministrador(
+                        "------ La impresora [" + impresora.getNombre()
+                        + "] tipo [" + tipo + "] fue agregada.", false);
+                JOptionPane.showMessageDialog(this,
+                        "Impresora agregada exitosamente",
+                        "Impresoras", JOptionPane.INFORMATION_MESSAGE);
+                opciones.realizarBKarchivo();
+                limpiarCampos();
+            }
         } else {
-            JOptionPane.showMessageDialog(this, "Debe ingresar el nombre y la IP de la impresora.", "Alerta", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "La impresora con destino '" + destino + "' ya existe.",
+                    "Impresoras", JOptionPane.ERROR_MESSAGE);
         }
 
     }//GEN-LAST:event_btnMIGuardarActionPerformed
 
+    private boolean esIPvalida(String ip) {
+        try {
+            String[] partes = ip.split("\\.");
+            if (partes.length != 4) {
+                return false;
+            }
+            for (String p : partes) {
+                int val = Integer.parseInt(p);
+                if (val < 0 || val > 255) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
     private void tbImpresorasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbImpresorasMouseClicked
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_tbImpresorasMouseClicked
+
+    private void btnRedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRedActionPerformed
+        // TODO add your handling code here:
+        lblDestino.setText("Dirección IP:");
+        lblDestino.setVisible(true);
+        txtDestinoImpresora.setText("");
+        txtDestinoImpresora.setToolTipText("Ej: 192.168.1.30");
+        txtDestinoImpresora.setVisible(true);
+    }//GEN-LAST:event_btnRedActionPerformed
+
+    private void btnUSBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUSBActionPerformed
+        lblDestino.setText("Nombre impresora:");
+        lblDestino.setVisible(true);
+        txtDestinoImpresora.setText("");
+        txtDestinoImpresora.setToolTipText("Nombre exacto de la impresora instalada en el sistema");
+        txtDestinoImpresora.setVisible(true);
+    }//GEN-LAST:event_btnUSBActionPerformed
+
+    private String getTipoConexion(ButtonGroup buttonGroup) {
+        for (AbstractButton boton : Collections.list(buttonGroup.getElements())) {
+            if (boton.isSelected()) {
+                return boton.getText().equalsIgnoreCase("Red") ? "IP" : "USB";
+            }
+        }
+        return null;
+    }
 
     private void limpiarCampos() {
         txtNombreImpresora.setText("");
+        txtDestinoImpresora.setText("");
+        txtDestinoImpresora.setVisible(false);
         grupoConexion.clearSelection();
+        lblDestino.setText("");
+        lblDestino.setVisible(false);
+        txtDestinoImpresora.setToolTipText("");
         cargarTablaImpresoras();
     }
 
-    private boolean AgregaImpresora(E_Impresora nuevaImpresora) {
-        for (E_Impresora i : GTXConfiguracionIG.ListaImpresoras) {
-            if (i.getNombre().equals(nuevaImpresora.getIp())) {
+    private boolean AgregaImpresora(E_Impresora nueva) {
+        for (E_Impresora existente : GTXConfiguracionIG.ListaImpresoras) {
+            if (existente.getDestino().equalsIgnoreCase(nueva.getDestino())
+                    && existente.getTipo().equalsIgnoreCase(nueva.getTipo())) {
                 return false;
             }
         }
-        GTXConfiguracionIG.ListaImpresoras.add(nuevaImpresora);
+        GTXConfiguracionIG.ListaImpresoras.add(nueva);
         return true;
     }
 
@@ -363,17 +495,20 @@ public final class P_Impresoras extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnMIGuardar;
+    private javax.swing.JRadioButton btnRed;
+    private javax.swing.JRadioButton btnUSB;
     private javax.swing.ButtonGroup grupoConexion;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JLabel lblDestino;
     private javax.swing.JTable tbImpresoras;
-    private javax.swing.JTextField txtIPImpresora;
+    private javax.swing.JTextField txtDestinoImpresora;
     private javax.swing.JTextField txtNombreImpresora;
     // End of variables declaration//GEN-END:variables
 }

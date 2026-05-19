@@ -100,8 +100,8 @@ public class ImpresionesPendientes {
                     if (listadoGuiasxUsuario != null) {
                         for (E_ImpresionesUsuario ixu : listadoGuiasxUsuario) {
                             boolean servicioEncontrado = false;
-                            String nombreImpresora = "";
-                            String ipImpresora = "";
+
+                            E_Impresora impresoraEncontrada = null;
 
                             for (E_Servicio s : serviciosConfigurados) {
                                 // Verifico si el usuario cuenta con un servicio configurado
@@ -110,8 +110,7 @@ public class ImpresionesPendientes {
                                     ArrayList<E_Impresora> impresorasConfiguradas = GTXConfiguracionIG.ListaImpresoras;
                                     for (E_Impresora imp : impresorasConfiguradas) {
                                         if (imp.getIdImpresora().equals(s.getIdImpresora())) {
-                                            nombreImpresora = imp.getNombre();
-                                            ipImpresora = imp.getIp();
+                                            impresoraEncontrada = imp;
                                             servicioEncontrado = true;
                                             break; // Detener el ciclo si se encuentra un servicio configurado
                                         }
@@ -121,13 +120,17 @@ public class ImpresionesPendientes {
                             //Si encontró un servicio configurado para el usuario
                             if (servicioEncontrado) {
 
-                                if (new G_Impresora().impresoraDisponible(ipImpresora)) {
+                                if (new G_Impresora().impresoraDisponible(impresoraEncontrada)) {
 
                                     ArchivoLogs.getInstance().grabaLogFileAdministrador(
                                             "------ Inicia solicitud de impresión - Usuario - ["
                                             + ixu.getUsuario().toString()
-                                            + "] - Impresora IP ["
-                                            + ipImpresora
+                                            + "] - Impresora ["
+                                            + impresoraEncontrada.getNombre() // nombre descriptivo
+                                            + "] - Tipo ["
+                                            + impresoraEncontrada.getTipo() // IP o USB
+                                            + "] - Destino ["
+                                            + impresoraEncontrada.getDestino() // IP o nombre USB
                                             + "]",
                                             false
                                     );
@@ -135,26 +138,35 @@ public class ImpresionesPendientes {
                                     System.out.println(
                                             "---> Inicia solicitud de impresión - Usuario ["
                                             + ixu.getUsuario().toString()
-                                            + "] - Impresora IP ["
-                                            + ipImpresora
+                                            + "] - Impresora ["
+                                            + impresoraEncontrada.getNombre()
+                                            + "] ["
+                                            + impresoraEncontrada.getTipo()
+                                            + "] ["
+                                            + impresoraEncontrada.getDestino()
                                             + "]"
                                     );
 
                                     for (E_Guia guiaxu : ixu.getGuiasImpresion()) {
-
-                                        generaImpresionGuia(guiaxu, ipImpresora);
-
+                                        generaImpresionGuia(guiaxu, impresoraEncontrada);
                                     }
 
                                 } else {
 
-                                    impresorasINACTIVAS.add(nombreImpresora + " - " + ipImpresora);
-
+                                    impresorasINACTIVAS.add(
+                                            impresoraEncontrada.getNombre()
+                                            + " [" + impresoraEncontrada.getTipo() + "]"
+                                            + " - " + impresoraEncontrada.getDestino()
+                                    );
                                     usuariosERROR.add(ixu.getUsuario().getCodigoUsuario());
 
                                     ArchivoLogs.getInstance().grabaLogFileAdministrador(
-                                            "------ Impresora IP ["
-                                            + ipImpresora
+                                            "------ Impresora ["
+                                            + impresoraEncontrada.getNombre()
+                                            + "] Tipo ["
+                                            + impresoraEncontrada.getTipo()
+                                            + "] Destino ["
+                                            + impresoraEncontrada.getDestino()
                                             + "] no disponible para imprimir guías del usuario ["
                                             + ixu.getUsuario().toString()
                                             + "]",
@@ -162,8 +174,12 @@ public class ImpresionesPendientes {
                                     );
 
                                     System.out.println(
-                                            ">>> No se encontró disponible la impresora IP ["
-                                            + ipImpresora
+                                            ">>> No se encontró disponible la impresora ["
+                                            + impresoraEncontrada.getNombre()
+                                            + "] ["
+                                            + impresoraEncontrada.getTipo()
+                                            + "] ["
+                                            + impresoraEncontrada.getDestino()
                                             + "] para imprimir guías del usuario ["
                                             + ixu.getUsuario().toString()
                                             + "] <<<"
@@ -172,7 +188,8 @@ public class ImpresionesPendientes {
                             } else {
                                 System.out.println("---> El usuario [" + ixu.getUsuario().toString() + "] NO cuenta con un servicio de impresión configurado");
                                 ArchivoLogs.getInstance().grabaLogFileAdministrador("------ Usuario [" + ixu.getUsuario().toString() + "] sin servicio de impresión", false);
-                                GTXConfiguracionIG.getTrayIcono().displayMessage("Servicio de impresión", "El usuario [" + ixu.getUsuario().getCodigoUsuario() + "] no cuenta con una impresora asignada para imprimir las guías pendientes. "
+                                GTXConfiguracionIG.getTrayIcono().displayMessage("Servicio de impresión",
+                                        "El usuario [" + ixu.getUsuario().getCodigoUsuario() + "] no cuenta con una impresora asignada para imprimir las guías pendientes. "
                                         + "Por favor, contacte a Guatex.", TrayIcon.MessageType.INFO);
                             }
                             System.out.println("---------------------------------------------------------------------------------");
@@ -220,7 +237,7 @@ public class ImpresionesPendientes {
 
         }
 
-        private void generaImpresionGuia(E_Guia guia, String ipImpresora) {
+        private void generaImpresionGuia(E_Guia guia, E_Impresora impresora) {
             M_ZPLguia zpl = new M_ZPLguia();
             int cantidadPiezas = Integer.valueOf(guia.getPiezas());
             int cantidadgHijas = guia.getGuiasHijas().size();
@@ -228,7 +245,7 @@ public class ImpresionesPendientes {
             if (cantidadPiezas > 1 && cantidadgHijas > 0) { //Guía con guias hijas
                 StringBuilder datosGuia = zpl.generaZPL(guia, 1, guia.getNumeroGuia());
                 //System.out.println(">> ZPL: \n" + datosGuia + "\n<<\n");
-                if (new G_Impresora().imprimirGuia(ipImpresora, datosGuia)) {
+                if (new G_Impresora().imprimirGuia(impresora, datosGuia)) {
                     impExitosas++;
                 }
                 int contador = 2;
@@ -236,13 +253,13 @@ public class ImpresionesPendientes {
                     guia.setGuiaMadre("N");
                     StringBuilder datosGuiaHija = zpl.generaZPL(guia, contador, s.getHguiaHija());
                     //System.out.println(">> ZPL: \n" + datosGuiaHija + "\n<<\n");
-                    if (new G_Impresora().imprimirGuia(ipImpresora, datosGuiaHija)) {
+                    if (new G_Impresora().imprimirGuia(impresora, datosGuiaHija)) {
                         impExitosas++;
                     }
                     contador++;
                 }
                 if (impExitosas == contador) {
-                    String impreso = new G_ConsultasBD().actualizarEstadoImpresion(guia.getNumeroGuia(), ipImpresora);
+                    String impreso = new G_ConsultasBD().actualizarEstadoImpresion(guia.getNumeroGuia(), impresora);
                     if (!impreso.equals("OK")) {
                         System.out.println("Error de actualización ----> guía: " + guia.getNumeroGuia());
                     } else {
@@ -253,8 +270,8 @@ public class ImpresionesPendientes {
             } else { //Imprime 1 guía
                 StringBuilder datosGuia = zpl.generaZPL(guia, 1, guia.getNumeroGuia());
                 //System.out.println(">> ZPL: \n" + datosGuia + "\n<<\n");
-                if (new G_Impresora().imprimirGuia(ipImpresora, datosGuia)) {
-                    String impreso = new G_ConsultasBD().actualizarEstadoImpresion(guia.getNumeroGuia(), ipImpresora);
+                if (new G_Impresora().imprimirGuia(impresora, datosGuia)) {
+                    String impreso = new G_ConsultasBD().actualizarEstadoImpresion(guia.getNumeroGuia(), impresora);
                     if (!impreso.equals("OK")) {
                         ArchivoLogs.getInstance().grabaLogFileAdministrador("------ Error de actualización ----> guía: " + guia.getNumeroGuia(), true);
                         System.out.println("Error de actualización ----> guía: " + guia.getNumeroGuia());

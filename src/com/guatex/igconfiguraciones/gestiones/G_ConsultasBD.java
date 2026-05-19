@@ -13,6 +13,7 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 import com.google.gson.reflect.TypeToken;
 import com.guatex.igconfiguraciones.entidades.E_ActualizarImpresion;
+import com.guatex.igconfiguraciones.entidades.E_Impresora;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import org.apache.http.client.methods.HttpGet;
@@ -25,8 +26,8 @@ import org.apache.http.client.methods.HttpPatch;
 public class G_ConsultasBD {
 
 //    private final String urlAPI = "https://sig.guatex.gt";
-//    private final String urlAPI = "http://localhost:8088";
-    private final String urlAPI = "https://desarrollo.guatex.gt";
+    private final String urlAPI = "http://localhost:8088";
+//    private final String urlAPI = "https://desarrollo.guatex.gt";
 
     private final String prefijo = "/apidevimpresiones";
 
@@ -43,7 +44,7 @@ public class G_ConsultasBD {
             httppost.setEntity(entity);
             try (CloseableHttpResponse response = httpclient.execute(httppost)) {
                 String jsonRespuesta = EntityUtils.toString(response.getEntity());
-                System.out.println("Respuesta: "+jsonRespuesta);
+                System.out.println("Respuesta: " + jsonRespuesta);
                 listaGuiasxImprimir = gson.fromJson(jsonRespuesta, new TypeToken<ArrayList<E_ImpresionesUsuario>>() {
                 }.getType());
 
@@ -55,7 +56,7 @@ public class G_ConsultasBD {
         return listaGuiasxImprimir;
     }
 
-    public String actualizarEstadoImpresion(String noguia, String ip) {
+    public String actualizarEstadoImpresion(String noguia, E_Impresora impresora) {
 
         String respuesta = "";
 
@@ -65,25 +66,15 @@ public class G_ConsultasBD {
 
             E_ActualizarImpresion req = new E_ActualizarImpresion();
             req.setNoguia(noguia);
-            req.setIp(ip);
+            req.setImpreso(impresora.getDestino());
 
             String json = gson.toJson(req);
 
-            HttpPatch httppatch = new HttpPatch(
-                    urlAPI + prefijo + "/agente/estado"
-            );
-
+            HttpPatch httppatch = new HttpPatch(urlAPI + prefijo + "/agente/estado");
             httppatch.addHeader("Content-Type", "application/json");
+            StringEntity entity = new StringEntity(json, StandardCharsets.UTF_8);
 
-            StringEntity entity = new StringEntity(
-                    json,
-                    StandardCharsets.UTF_8
-            );
-
-            entity.setContentType(
-                    new BasicHeader(HTTP.CONTENT_TYPE, "application/json")
-            );
-
+            entity.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
             httppatch.setEntity(entity);
 
             try (CloseableHttpResponse response = httpclient.execute(httppatch)) {
