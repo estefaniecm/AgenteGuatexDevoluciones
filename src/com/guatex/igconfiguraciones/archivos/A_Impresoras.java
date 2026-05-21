@@ -21,39 +21,53 @@ public class A_Impresoras {
     private final String rutaBK = Parametros.getRutaRaiz() + "BACKUP_IMPRESION_GUATEX\\BK_IMPRESORAS\\" + nombreArchivo;
 
     public ArrayList<E_Impresora> impresorasRegistradas() {
-        ArrayList lista = new ArrayList<>();
+        return impresorasRegistradas(false);
+    }
+
+    private ArrayList<E_Impresora> impresorasRegistradas(boolean desdeBackup) {
+        ArrayList<E_Impresora> lista = new ArrayList<>();
         try {
             File archivoTxt = new File(rutaArchivo);
+
             if (!archivoTxt.exists()) {
-                System.out.println("x/x/x El archivo de Impresoras no exite x/x/x");
+                System.out.println("x/x/x El archivo de Impresoras no existe x/x/x");
                 archivoTxt.getParentFile().mkdirs();
                 archivoTxt.createNewFile();
-                System.out.println("      El archivo de Impresoras fue creado y se probará realizar una restauración desde BK");
-                if (restaurarDesdeBK()) {
-                    return impresorasRegistradas();
-                }
-            } else {
-                if (archivoTxt.length() == 0) {
-                    System.out.println("** Archivo de Impresoras vacío **");
-                    System.out.println("   Se probará realizar una restauración desde el backup...");
-                    if (restaurarDesdeBK()) {
-                        return impresorasRegistradas();
-                    }
+                System.out.println("      El archivo de Impresoras fue creado. Intentando restaurar desde BK...");
+
+                if (!desdeBackup && restaurarDesdeBK()) {
+                    return impresorasRegistradas(true);
                 } else {
-                    System.out.println(">> Archivo de Impresoras con datos <<");
-                    try (BufferedReader reader = new BufferedReader(new FileReader(archivoTxt))) {
-                        String registro;
-                        while ((registro = reader.readLine()) != null) {
-                            E_Impresora imp = new E_Impresora().getImpresora(registro);
-                            lista.add(imp);
-                        }
+                    System.out.println("** No se pudo restaurar desde BK o archivo BK también vacío **");
+                }
+
+            } else if (archivoTxt.length() == 0) {
+                System.out.println("** Archivo de Impresoras vacío **");
+
+                if (!desdeBackup && restaurarDesdeBK()) {
+                    System.out.println("   Restauración desde BK exitosa. Releyendo...");
+                    return impresorasRegistradas(true);
+                } else {
+                    System.out.println("** No se pudo restaurar o BK también vacío. Se retorna lista vacía **");
+                }
+
+            } else {
+                System.out.println(">> Archivo de Impresoras con datos <<");
+                try (BufferedReader reader = new BufferedReader(new FileReader(archivoTxt))) {
+                    String registro;
+                    while ((registro = reader.readLine()) != null) {
+                        E_Impresora imp = new E_Impresora().getImpresora(registro);
+                        lista.add(imp);
                     }
                 }
             }
+
         } catch (IOException e) {
-            ArchivoLogs.getInstance().grabaLogFileAdministrador("------ Excepción - Archivo impresoras - [" + e.getLocalizedMessage() + "]", true);
+            ArchivoLogs.getInstance().grabaLogFileAdministrador(
+                    "------ Excepción - Archivo impresoras - [" + e.getLocalizedMessage() + "]", true);
             e.printStackTrace();
         }
+
         return lista;
     }
 

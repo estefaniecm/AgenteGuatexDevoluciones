@@ -48,7 +48,6 @@ public class M_ZPLguia {
         config.append("^PR6,6");//Velocidad de impresion  3
         config.append("^PMN\n");//Print Mirror image  N=no Y=yes
         config.append("^MNY");//"^XA"/*Tipo de deteccion de medios Y= No continuo Web Sensing*/
-        config.append("^LS-20");//con este comando se ha variado el margen izquierdo para este tipo de etiqueta
         config.append("^MTD");//Tipo de Medio D=Directo T=Transferencia
         config.append("^MMT,N");//MMT=Metodo de prepelar  N= No
         config.append("^MPE");//Modo de Proteccion E= Encendido todo
@@ -84,39 +83,6 @@ public class M_ZPLguia {
         }
         header.append("^FS\n");
         return header;
-    }
-
-    private StringBuilder bloqueDestinatarioOriginal(E_Guia guia) {
-
-        StringBuilder bloque = new StringBuilder();
-
-        String nombre = "Destinatario original: " + guia.getNombreDestinatario();
-        String direccion = "Dirección original: "
-                + guia.getDireccionDestinatario()
-                + " "
-                + guia.getMuniDestinatario();
-
-        String telefono = "Teléfono: " + guia.getTelefonoDestinatario();
-
-        bloque.append("^FO0,")
-                .append(inicioTexto + 45)
-                .append("\n");
-
-        bloque.append("^A0N,20,17\n");
-
-        // ancho 550, max 5 líneas, separación 4
-        bloque.append("^FB550,5,4,L,0\n");
-
-        bloque.append("^FD")
-                .append(nombre)
-                .append("\\&")
-                .append(direccion)
-                .append("\\&")
-                .append(telefono);
-
-        bloque.append("^FS\n");
-
-        return bloque;
     }
 
     private StringBuilder nombreDestinatarioOriginal(E_Guia guia) {
@@ -283,7 +249,7 @@ public class M_ZPLguia {
     private StringBuilder telefonoDestinatarioOriginal(E_Guia guia) {
         StringBuilder Tdestinatario = new StringBuilder();
 
-        Tdestinatario.append("^FO0,").append(inicioTexto + 145).append(",0");
+        Tdestinatario.append("^FO0,").append(inicioTexto + 167).append(",0");
         Tdestinatario.append("^A0,20,17\n");
         Tdestinatario.append("^FH\\");
         Tdestinatario.append("^FD").append("Teléfono: ").append(guia.getTelefonoRemitente());
@@ -301,7 +267,7 @@ public class M_ZPLguia {
 
         if (CODvalorCobrar > 0) {
             if (longitud <= 40) {
-                Ndestinatario.append("^FO0,").append(inicioTexto + 173).append(",0");
+                Ndestinatario.append("^FO0,").append(inicioTexto + 195).append(",0");
                 Ndestinatario.append("^A0N,N,25,25");
                 Ndestinatario.append("^FH\\");
                 Ndestinatario.append("^FD").append(nombreD);
@@ -317,7 +283,7 @@ public class M_ZPLguia {
                 if (end > longitud) {
                     end = longitud;
                 }
-                Ndestinatario.append("^FO0,").append(inicioTexto + 173).append(",0");
+                Ndestinatario.append("^FO0,").append(inicioTexto + 195).append(",0");
                 Ndestinatario.append("^A0N,N,25,25");
                 Ndestinatario.append("^FH\\");
                 Ndestinatario.append("^FD").append(nombreD.substring(start, end).trim());
@@ -331,7 +297,7 @@ public class M_ZPLguia {
                     if (end > longitud) {
                         end = longitud;
                     }
-                    Ndestinatario.append("^FO0,").append(inicioTexto + 198).append(",0");
+                    Ndestinatario.append("^FO0,").append(inicioTexto + 220).append(",0");
                     Ndestinatario.append("^A0N,N,25,25");
                     Ndestinatario.append("^FH\\");
                     Ndestinatario.append("^FD").append(nombreD.substring(start, end).trim());
@@ -343,7 +309,7 @@ public class M_ZPLguia {
 
         } else {
             if (longitud <= 45) {
-                Ndestinatario.append("^FO0,").append(inicioTexto + 173).append(",0");
+                Ndestinatario.append("^FO0,").append(inicioTexto + 195).append(",0");
                 Ndestinatario.append("^A0N,N,25,25");
                 Ndestinatario.append("^FH\\");
                 Ndestinatario.append("^FD").append(nombreD);
@@ -359,7 +325,7 @@ public class M_ZPLguia {
                 if (end > longitud) {
                     end = longitud;
                 }
-                Ndestinatario.append("^FO0,").append(inicioTexto + 173).append(",0");
+                Ndestinatario.append("^FO0,").append(inicioTexto + 195).append(",0");
                 Ndestinatario.append("^A0N,N,25,25");
                 Ndestinatario.append("^FH\\");
                 Ndestinatario.append("^FD").append(nombreD.substring(start, end).trim());
@@ -373,7 +339,7 @@ public class M_ZPLguia {
                     if (end > longitud) {
                         end = longitud;
                     }
-                    Ndestinatario.append("^FO0,").append(inicioTexto + 198).append(",0");//340
+                    Ndestinatario.append("^FO0,").append(inicioTexto + 220).append(",0");//340
                     Ndestinatario.append("^A0N,N,25,25");
                     Ndestinatario.append("^FH\\");
                     Ndestinatario.append("^FD").append(nombreD.substring(start, end).trim());
@@ -408,7 +374,7 @@ public class M_ZPLguia {
         // Si CODvalorCobrar es mayor que 0
         if (CODvalorCobrar > 0) {
             if (longitud <= 40) {
-                Ddestinatario.append("^FO0,").append(inicioTexto + 233).append(",0");
+                Ddestinatario.append("^FO0,").append(inicioTexto + 250).append(",0");
                 Ddestinatario.append("^A0N,N,25,25");
                 Ddestinatario.append("^FH\\");
                 Ddestinatario.append("^FD").append(direccionD);
@@ -419,7 +385,7 @@ public class M_ZPLguia {
 
                 // Procesa la primera parte (0 a 40)
                 int end = Math.min(start + maxLineLength, longitud);
-                Ddestinatario.append("^FO0,").append(inicioTexto + 233).append(",0");
+                Ddestinatario.append("^FO0,").append(inicioTexto + 250).append(",0");
                 Ddestinatario.append("^A0N,N,25,25");
                 Ddestinatario.append("^FH\\");
                 Ddestinatario.append("^FD").append(direccionD.substring(start, end).trim());
@@ -430,7 +396,7 @@ public class M_ZPLguia {
                 // Procesa la segunda parte (40 a 80)
                 if (longitud > start) {
                     end = Math.min(start + maxLineLength, longitud);
-                    Ddestinatario.append("^FO0,").append(inicioTexto + 258).append(",0");
+                    Ddestinatario.append("^FO0,").append(inicioTexto + 275).append(",0");
                     Ddestinatario.append("^A0N,N,25,25");
                     Ddestinatario.append("^FH\\");
                     Ddestinatario.append("^FD").append(direccionD.substring(start, end).trim());
@@ -442,7 +408,7 @@ public class M_ZPLguia {
                 // Procesa la tercera parte (80 a 120)
                 if (longitud > start) {
                     end = Math.min(start + maxLineLength, longitud);
-                    Ddestinatario.append("^FO0,").append(inicioTexto + 283).append(",0");//415
+                    Ddestinatario.append("^FO0,").append(inicioTexto + 300).append(",0");//415
                     Ddestinatario.append("^A0N,N,25,25");
                     Ddestinatario.append("^FH\\");
                     Ddestinatario.append("^FD").append(direccionD.substring(start, end).trim());
@@ -453,7 +419,7 @@ public class M_ZPLguia {
             // Si CODvalorCobrar es 0 o menor
         } else {
             if (longitud <= 45) {
-                Ddestinatario.append("^FO0,").append(inicioTexto + 233).append(",0");//365
+                Ddestinatario.append("^FO0,").append(inicioTexto + 250).append(",0");//365
                 Ddestinatario.append("^A0N,N,25,25");
                 Ddestinatario.append("^FH\\");
                 Ddestinatario.append("^FD").append(direccionD);
@@ -464,7 +430,7 @@ public class M_ZPLguia {
 
                 // Procesa la primera parte (0 a 45)
                 int end = Math.min(start + maxLineLength, longitud);
-                Ddestinatario.append("^FO0,").append(inicioTexto + 233).append(",0");//365
+                Ddestinatario.append("^FO0,").append(inicioTexto + 250).append(",0");//365
                 Ddestinatario.append("^A0N,N,25,25");
                 Ddestinatario.append("^FH\\");
                 Ddestinatario.append("^FD").append(direccionD.substring(start, end).trim());
@@ -475,7 +441,7 @@ public class M_ZPLguia {
                 // Procesa la segunda parte (45 a 90)
                 if (longitud > start) {
                     end = Math.min(start + maxLineLength, longitud);
-                    Ddestinatario.append("^FO0,").append(inicioTexto + 258).append(",0");//390
+                    Ddestinatario.append("^FO0,").append(inicioTexto + 275).append(",0");//390
                     Ddestinatario.append("^A0N,N,25,25");
                     Ddestinatario.append("^FH\\");
                     Ddestinatario.append("^FD").append(direccionD.substring(start, end).trim());
@@ -487,7 +453,7 @@ public class M_ZPLguia {
                 // Procesa la tercera parte (90 a 135)
                 if (longitud > start) {
                     end = Math.min(start + maxLineLength, longitud);
-                    Ddestinatario.append("^FO0,").append(inicioTexto + 283).append(",0");//415
+                    Ddestinatario.append("^FO0,").append(inicioTexto + 300).append(",0");//415
                     Ddestinatario.append("^A0N,N,25,25");
                     Ddestinatario.append("^FH\\");
                     Ddestinatario.append("^FD").append(direccionD.substring(start, end).trim());
@@ -500,7 +466,7 @@ public class M_ZPLguia {
 
     private StringBuilder telefonoDestinatarioFinal(E_Guia guia) {
         StringBuilder Tremitente = new StringBuilder();
-        Tremitente.append("^FO0,").append(inicioTexto + 318).append(",0");
+        Tremitente.append("^FO0,").append(inicioTexto + 330).append(",0");
         Tremitente.append("^A0,N,25,25");
         Tremitente.append("^FH\\");
         Tremitente.append("^FD").append("Teléfono: ").append(guia.getTelefonoDestinatario());
@@ -510,7 +476,7 @@ public class M_ZPLguia {
 
     private StringBuilder noGuiaImagen(E_Guia guia, String guiaImprimir) {
         StringBuilder noGuiaIMG = new StringBuilder();
-        noGuiaIMG.append("^FO10,").append(inicioTexto + 352).append(",0");
+        noGuiaIMG.append("^FO10,").append(inicioTexto + 375).append(",0");
         noGuiaIMG.append("^AA,N,25,10");
         if (guia.getGuiaMadre().equals("S")) {
             noGuiaIMG.append("^FD").append(guia.getNumeroGuia());
@@ -518,7 +484,7 @@ public class M_ZPLguia {
             noGuiaIMG.append("^FD").append(guiaImprimir);
         }
         noGuiaIMG.append("^FS\n");
-        noGuiaIMG.append("^FO370,").append(inicioTexto + 290).append(",0");
+        noGuiaIMG.append("^FO370,").append(inicioTexto + 315).append(",0");
         noGuiaIMG.append("^IME:IMG.GRF,1,1");
         noGuiaIMG.append("^FS\n");
         return noGuiaIMG;
@@ -528,17 +494,17 @@ public class M_ZPLguia {
 
         StringBuilder ptoDes = new StringBuilder();
 
-        ptoDes.append("^FO160,565");
+        ptoDes.append("^FO160,590");
         ptoDes.append("^GB245,10,130");
         ptoDes.append("^FS\n");
 
         ptoDes.append("^LRY");
-        ptoDes.append("^FO180,580,0");
+        ptoDes.append("^FO180,610,0");
         ptoDes.append("^A0,N,125,70");
         ptoDes.append("^FDDEV");
         ptoDes.append("^FS\n");
 
-        ptoDes.append("^FO85,710,0");
+        ptoDes.append("^FO85,730,0");
         ptoDes.append("^A0,N,225,70");
         ptoDes.append("^FD").append(guia.getPuntoDestino());
 
@@ -570,14 +536,14 @@ public class M_ZPLguia {
 
         double CODvalorCobrar = Double.parseDouble(guia.getCodValorCobrar());
         if (CODvalorCobrar > 0) {
-            if (longitud > 41 && longitud < 98) {//if (longitud > 51 && longitud < 108) {
+            if (longitud > 41 && longitud < 98) {
                 // Buscar el último espacio antes de cortar en 51 caracteres
                 int end1 = info.lastIndexOf(" ", 41);
                 if (end1 == -1) {
                     end1 = 41; // Si no hay espacio, corta en 51 caracteres
                 }
                 // Primera parte (0 a 51)
-                infoGuia.append("^FO0,").append(inicioTexto + 740).append(",0");
+                infoGuia.append("^FO0,").append(inicioTexto + 755).append(",0");
                 infoGuia.append("^A0,N,23,23");
                 infoGuia.append("^FD").append(info.substring(0, end1).trim());
                 infoGuia.append("^FS\n");
@@ -588,7 +554,7 @@ public class M_ZPLguia {
                     if (end2 == -1) {
                         end2 = longitud;
                     }
-                    infoGuia.append("^FO0,").append(inicioTexto + 770).append(",0");
+                    infoGuia.append("^FO0,").append(inicioTexto + 785).append(",0");
                     infoGuia.append("^A0,N,23,23");
                     infoGuia.append("^FD").append(info.substring(end1).trim());
                     infoGuia.append("^FS\n");
@@ -601,7 +567,7 @@ public class M_ZPLguia {
                     end1 = 51; // Si no hay espacio, corta en 51 caracteres
                 }
                 // Primera parte (0 a 51)
-                infoGuia.append("^FO0,").append(inicioTexto + 740).append(",0");
+                infoGuia.append("^FO0,").append(inicioTexto + 755).append(",0");
                 infoGuia.append("^A0,N,23,23");
                 infoGuia.append("^FD").append(info.substring(0, end1).trim());
                 infoGuia.append("^FS\n");
@@ -613,7 +579,7 @@ public class M_ZPLguia {
                 }
                 // Segunda parte (51 a 103)
                 if (longitud > end1) {
-                    infoGuia.append("^FO0,").append(inicioTexto + 770).append(",0");
+                    infoGuia.append("^FO0,").append(inicioTexto + 785).append(",0");
                     infoGuia.append("^A0,N,23,23");
                     infoGuia.append("^FD").append(info.substring(end1, end2).trim());
                     infoGuia.append("^FS\n");
@@ -626,14 +592,14 @@ public class M_ZPLguia {
                         end3 = longitud;
                     }
 
-                    infoGuia.append("^FO0,").append(inicioTexto + 800).append(",0");
+                    infoGuia.append("^FO0,").append(inicioTexto + 815).append(",0");
                     infoGuia.append("^A0,N,23,23");
                     infoGuia.append("^FD").append(info.substring(end2).trim());
                     infoGuia.append("^FS\n");
                 }
 
             } else if (longitud <= 41) {
-                infoGuia.append("^FO0,").append(inicioTexto + 740).append(",0");
+                infoGuia.append("^FO0,").append(inicioTexto + 755).append(",0");
                 infoGuia.append("^A0,N,23,23");
                 infoGuia.append("^FD").append(info);
                 infoGuia.append("^FS\n");
@@ -647,14 +613,14 @@ public class M_ZPLguia {
                 if (end1 == -1) {
                     end1 = 51; // Si no hay espacio, corta en 51 caracteres
                 }
-                infoGuia.append("^FO0,").append(inicioTexto + 740).append(",0");
+                infoGuia.append("^FO0,").append(inicioTexto + 755).append(",0");
                 infoGuia.append("^A0,N,24,24");
                 infoGuia.append("^FD").append(info.substring(0, end1).trim());
                 infoGuia.append("^FS\n");
 
                 // Segunda parte desde el final de la primera hasta el final
                 if (longitud > end1) {
-                    infoGuia.append("^FO0,").append(inicioTexto + 770).append(",0");
+                    infoGuia.append("^FO0,").append(inicioTexto + 785).append(",0");
                     infoGuia.append("^A0,N,24,24");
                     infoGuia.append("^FD").append(info.substring(end1).trim());
                     infoGuia.append("^FS\n");
@@ -666,7 +632,7 @@ public class M_ZPLguia {
                 if (end1 == -1) {
                     end1 = 54; // Si no hay espacio, corta en 54 caracteres
                 }
-                infoGuia.append("^FO0,").append(inicioTexto + 740).append(",0");
+                infoGuia.append("^FO0,").append(inicioTexto + 755).append(",0");
                 infoGuia.append("^A0,N,24,24");
                 infoGuia.append("^FD").append(info.substring(0, end1).trim());
                 infoGuia.append("^FS\n");
@@ -677,7 +643,7 @@ public class M_ZPLguia {
                     end2 = 110; // Si no hay espacio, corta en 110 caracteres
                 }
                 if (longitud > end1) {
-                    infoGuia.append("^FO0,").append(inicioTexto + 770).append(",0");
+                    infoGuia.append("^FO0,").append(inicioTexto + 785).append(",0");
                     infoGuia.append("^A0,N,24,24");
                     infoGuia.append("^FD").append(info.substring(end1, end2).trim());
                     infoGuia.append("^FS\n");
@@ -685,14 +651,14 @@ public class M_ZPLguia {
 
                 // Tercera parte desde el final de la segunda hasta el final
                 if (longitud > end2) {
-                    infoGuia.append("^FO0,").append(inicioTexto + 800).append(",0");
+                    infoGuia.append("^FO0,").append(inicioTexto + 815).append(",0");
                     infoGuia.append("^A0,N,24,24");
                     infoGuia.append("^FD").append(info.substring(end2).trim());
                     infoGuia.append("^FS\n");
                 }
 
             } else if (longitud <= 51) {
-                infoGuia.append("^FO0,").append(inicioTexto + 740).append(",0");
+                infoGuia.append("^FO0,").append(inicioTexto + 755).append(",0");
                 infoGuia.append("^A0,N,24,24");
                 infoGuia.append("^FD").append(info);
                 infoGuia.append("^FS\n");
@@ -701,72 +667,40 @@ public class M_ZPLguia {
         return infoGuia;
     }
 
-//    private StringBuilder QRpiezas(E_Guia guia, int contadorPiezas) {
-//        StringBuilder QRPiezas = new StringBuilder();
-//        //Rectángulo
-//        QRPiezas.append("^FO0,").append(inicioTexto + (850)).append(",0");//inicio rectángulo
-//        QRPiezas.append("^GB435,32,30");//ancho, altura, grosor, color (0=negro 1=blanco), redondeo en las esquinas (0=recto)
-//        QRPiezas.append("^FS\n");//finaliza rectángulo
-//        //Tracking - Términos y Condiciones
-//        QRPiezas.append("^FO10,").append(inicioTexto + (855)).append(",0");//x, y, 0
-//        QRPiezas.append("^A0,N,22,22");//Tamaño de la letra
-//        QRPiezas.append("^FH\\");
-//        QRPiezas.append("^FDTracking | Condiciones Generales de Servicio\n");
-//        QRPiezas.append("^FS\n");//finaliza texto
-//        //QR - > redirecciona https://servicios.guatex.gt/Guatex/rastreoTracking?tipo=G&dato=noguia
-//        QRPiezas.append("^FO0,").append(inicioTexto + (895)).append(",0");
-//        QRPiezas.append("^BQ,2,5");
-//        QRPiezas.append("^FDQA,").append("https://servicios.guatex.gt/Guatex/rastreoTracking?tipo=G&dato=" + guia.getNumeroGuia());
-//        QRPiezas.append("^FS\n");
-//        if (Integer.valueOf((guia.getPiezas())) > 99) {
-//            QRPiezas.append("^FO200,").append(inicioTexto + 935).append(",0");
-//            QRPiezas.append("^A0,N,100,70");
-//            QRPiezas.append("^FD").append(contadorPiezas).append("/").append(guia.getPiezas());
-//            QRPiezas.append("^FS\n");
-//        } else {
-//            QRPiezas.append("^FO230,").append(inicioTexto + 935).append(",0");
-//            QRPiezas.append("^A0,N,150,70");
-//            QRPiezas.append("^FD").append(contadorPiezas).append("/").append(guia.getPiezas());
-//            QRPiezas.append("^FS\n");
-//        }
-//        return QRPiezas;
-//    }
-
-    
     private StringBuilder QRpiezas(E_Guia guia, int contadorPiezas) {
-    StringBuilder QRPiezas = new StringBuilder();
+        StringBuilder QRPiezas = new StringBuilder();
 
-    // Rectángulo
-    QRPiezas.append("^FO0,").append(inicioTexto + 820).append(",0");   // antes 850
-    QRPiezas.append("^GB435,32,30");
-    QRPiezas.append("^FS\n");
-
-    // Tracking - Términos y Condiciones
-    QRPiezas.append("^FO10,").append(inicioTexto + 825).append(",0");  // antes 855
-    QRPiezas.append("^A0,N,22,22");
-    QRPiezas.append("^FH\\");
-    QRPiezas.append("^FDTracking | Condiciones Generales de Servicio\n");
-    QRPiezas.append("^FS\n");
-
-    // QR
-    QRPiezas.append("^FO0,").append(inicioTexto + 865).append(",0");   // antes 895
-    QRPiezas.append("^BQ,2,5");
-    QRPiezas.append("^FDQA,").append("https://servicios.guatex.gt/Guatex/rastreoTracking?tipo=G&dato=" + guia.getNumeroGuia());
-    QRPiezas.append("^FS\n");
-
-    if (Integer.valueOf((guia.getPiezas())) > 99) {
-        QRPiezas.append("^FO200,").append(inicioTexto + 905).append(",0"); // antes 935
-        QRPiezas.append("^A0,N,100,70");
-        QRPiezas.append("^FD").append(contadorPiezas).append("/").append(guia.getPiezas());
+        // Rectángulo
+        QRPiezas.append("^FO0,").append(inicioTexto + 850).append(",0");
+        QRPiezas.append("^GB435,32,30");
         QRPiezas.append("^FS\n");
-    } else {
-        QRPiezas.append("^FO230,").append(inicioTexto + 905).append(",0"); // antes 935
-        QRPiezas.append("^A0,N,150,70");
-        QRPiezas.append("^FD").append(contadorPiezas).append("/").append(guia.getPiezas());
+
+        // Tracking - Términos y Condiciones
+        QRPiezas.append("^FO10,").append(inicioTexto + 855).append(",0");
+        QRPiezas.append("^A0,N,22,22");
+        QRPiezas.append("^FH\\");
+        QRPiezas.append("^FDTracking | Condiciones Generales de Servicio\n");
         QRPiezas.append("^FS\n");
+
+        // QR
+        QRPiezas.append("^FO0,").append(inicioTexto + 890).append(",0");   // antes 850
+        QRPiezas.append("^BQ,2,4");
+        QRPiezas.append("^FDQA,").append("https://servicios.guatex.gt/Guatex/rastreoTracking?tipo=G&dato=" + guia.getNumeroGuia());
+        QRPiezas.append("^FS\n");
+
+        if (Integer.valueOf((guia.getPiezas())) > 99) {
+            QRPiezas.append("^FO200,").append(inicioTexto + 935).append(",0"); // antes 935
+            QRPiezas.append("^A0,N,100,70");
+            QRPiezas.append("^FD").append(contadorPiezas).append("/").append(guia.getPiezas());
+            QRPiezas.append("^FS\n");
+        } else {
+            QRPiezas.append("^FO230,").append(inicioTexto + 935).append(",0"); // antes 935
+            QRPiezas.append("^A0,N,150,70");
+            QRPiezas.append("^FD").append(contadorPiezas).append("/").append(guia.getPiezas());
+            QRPiezas.append("^FS\n");
+        }
+
+        return QRPiezas;
     }
 
-    return QRPiezas;
-}
-    
 }

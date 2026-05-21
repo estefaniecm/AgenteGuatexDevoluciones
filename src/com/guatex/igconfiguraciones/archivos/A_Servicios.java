@@ -21,39 +21,53 @@ public class A_Servicios {
     private final String rutaBK = Parametros.getRutaRaiz() + "BACKUP_IMPRESION_GUATEX\\BK_SERVICIOS\\" + nombreArchivo;
 
     public ArrayList<E_Servicio> serviciosRegistrados() {
-        ArrayList lista = new ArrayList<>();
+        return serviciosRegistrados(false); // primera llamada sin BK
+    }
+
+    private ArrayList<E_Servicio> serviciosRegistrados(boolean desdeBackup) {
+        ArrayList<E_Servicio> lista = new ArrayList<>();
         try {
             File archivoTxt = new File(rutaArchivo);
+
             if (!archivoTxt.exists()) {
-                System.out.println("x/x/x El archivo de Servicios de impresión no exite x/x/x");
+                System.out.println("x/x/x El archivo de Servicios de impresión no existe x/x/x");
                 archivoTxt.getParentFile().mkdirs();
                 archivoTxt.createNewFile();
-                System.out.println("      El archivo de Servicios de impresión fue creado y se probará realizar una restauración desde BK");
-                if (restaurarDesdeBK()) {
-                    return serviciosRegistrados();
-                }
-            } else {
-                if (archivoTxt.length() == 0) {
-                    System.out.println("** Archivo de Servicios de impresión vacío **");
-                    System.out.println("   Se probará realizar una restauración desde el backup...");
-                    if (restaurarDesdeBK()) {
-                        return serviciosRegistrados();
-                    }
+                System.out.println("      El archivo fue creado. Intentando restaurar desde BK...");
+
+                if (!desdeBackup && restaurarDesdeBK()) {
+                    return serviciosRegistrados(true);
                 } else {
-                    System.out.println(">> Archivo de Servicios de impresión con datos <<");
-                    try (BufferedReader reader = new BufferedReader(new FileReader(archivoTxt))) {
-                        String registro;
-                        while ((registro = reader.readLine()) != null) {
-                            E_Servicio imp = new E_Servicio().getServicio(registro);
-                            lista.add(imp);
-                        }
+                    System.out.println("** No se pudo restaurar desde BK o archivo BK también vacío **");
+                }
+
+            } else if (archivoTxt.length() == 0) {
+                System.out.println("** Archivo de Servicios de impresión vacío **");
+
+                if (!desdeBackup && restaurarDesdeBK()) {
+                    System.out.println("   Restauración desde BK exitosa. Releyendo...");
+                    return serviciosRegistrados(true);
+                } else {
+                    System.out.println("** No se pudo restaurar o BK también vacío. Se retorna lista vacía **");
+                }
+
+            } else {
+                System.out.println(">> Archivo de Servicios de impresión con datos <<");
+                try (BufferedReader reader = new BufferedReader(new FileReader(archivoTxt))) {
+                    String registro;
+                    while ((registro = reader.readLine()) != null) {
+                        E_Servicio imp = new E_Servicio().getServicio(registro);
+                        lista.add(imp);
                     }
                 }
             }
+
         } catch (IOException e) {
-            ArchivoLogs.getInstance().grabaLogFileAdministrador("------ Excepción - Archivo servicios - [" + e.getLocalizedMessage() + "]", true);
+            ArchivoLogs.getInstance().grabaLogFileAdministrador(
+                    "------ Excepción - Archivo servicios - [" + e.getLocalizedMessage() + "]", true);
             e.printStackTrace();
         }
+
         return lista;
     }
 
@@ -101,8 +115,8 @@ public class A_Servicios {
             }
             arc.ocultarDirectorio(rutaCopia.getParent());
             // Ocultar la carpeta "BACKUP"
-            arc. ocultarDirectorio(Paths.get(Parametros.getRutaRaiz() + "BACKUP"));
-            
+            arc.ocultarDirectorio(Paths.get(Parametros.getRutaRaiz() + "BACKUP"));
+
             // Verificar que el archivo original exista y sea un archivo regular
             if (Files.exists(rutaOriginal) && Files.isRegularFile(rutaOriginal)) {
                 // Copiar el archivo desde el origen hasta el destino, reemplazando si ya existe

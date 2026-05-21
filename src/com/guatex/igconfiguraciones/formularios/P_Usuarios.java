@@ -35,7 +35,7 @@ public final class P_Usuarios extends javax.swing.JPanel {
         this.tbUsuarios.getModel().addTableModelListener(new TableModelListener() {
             @Override
             public void tableChanged(TableModelEvent e) {
-                if (e.getColumn() == 2) {
+                if (e.getColumn() == 1) {
                     validarSeleccionEliminar();
                 }
             }
@@ -63,44 +63,45 @@ public final class P_Usuarios extends javax.swing.JPanel {
     private void validarSeleccionEliminar() {
         DefaultTableModel modeloTabla = (DefaultTableModel) tbUsuarios.getModel();
         int filas = modeloTabla.getRowCount();
-        int usuarioEliminar = 0;
+        int usuarioEliminar = -1;
 
-        // Buscar casilla seleccionada seleccionadas
         for (int i = 0; i < filas; i++) {
-            Boolean isSelected = (Boolean) modeloTabla.getValueAt(i, 2);
+            Boolean isSelected = (Boolean) modeloTabla.getValueAt(i, 1);
             if (isSelected != null && isSelected) {
                 usuarioEliminar = i;
             }
         }
-        String cPadre = (String) modeloTabla.getValueAt(usuarioEliminar, 0);
-        String cUsuario = (String) modeloTabla.getValueAt(usuarioEliminar, 1);
-        String idRegistro = (String) modeloTabla.getValueAt(usuarioEliminar, 3);
+
+        if (usuarioEliminar == -1) {
+            return; // ninguno seleccionado
+        }
+        String cUsuario = (String) modeloTabla.getValueAt(usuarioEliminar, 0);
+        String idRegistro = (String) modeloTabla.getValueAt(usuarioEliminar, 2);
 
         if (!existeUsuarioEnServicios(idRegistro)) {
             int respuesta = JOptionPane.showConfirmDialog(null,
-                    "¿Está seguro de eliminar el usuario '" + cPadre + "/" + cUsuario + "'?",
+                    "¿Está seguro de eliminar el usuario '" + cUsuario + "'?",
                     "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
             if (respuesta == JOptionPane.YES_OPTION) {
                 GTXConfiguracionIG.ListaUsuarios.remove(usuarioEliminar);
                 boolean actualizaArchivo = new A_Usuarios().guardarUsuariosArchivo();
                 if (actualizaArchivo) {
-                    ArchivoLogs.getInstance().grabaLogFileAdministrador("------ El usuario [" + cUsuario + "] fue eliminado.", false);
+                    ArchivoLogs.getInstance().grabaLogFileAdministrador(
+                            "------ El usuario [" + cUsuario + "] fue eliminado.", false);
                     opciones.realizarBKarchivo();
-                    cargarTablaUsuarios();
+                } else {
+                    JOptionPane.showMessageDialog(null,
+                            "No se pudo guardar el archivo. El usuario no fue eliminado.",
+                            "Error", JOptionPane.ERROR_MESSAGE);
                 }
-            } else {
-                cargarTablaUsuarios();
+                cargarTablaUsuarios(); // ✅ siempre refresca
             }
         } else {
-            int respuesta = JOptionPane.showConfirmDialog(null,
-                    "No es posible eliminar el usuario '" + cPadre + "/" + cUsuario + "' porque tiene servicios asociados. \nConsulte 'Mantenimiento de Servicios'.",
+            JOptionPane.showConfirmDialog(null,
+                    "No es posible eliminar el usuario '" + cUsuario + "' porque tiene servicios asociados. \nConsulte 'Mantenimiento de Servicios'.",
                     "Alerta", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
-            if (respuesta == JOptionPane.OK_OPTION || respuesta == JOptionPane.CLOSED_OPTION) {
-                cargarTablaUsuarios();
-            }
-
+            cargarTablaUsuarios();
         }
-
     }
 
     /**
@@ -279,25 +280,25 @@ public final class P_Usuarios extends javax.swing.JPanel {
         // TODO add your handling code here:
         String id = E_Usuario.generaIDregistro();
         String codigoUsuario = txtCodigoUsuario.getText().trim();
-            if (!codigoUsuario.isEmpty()) {
-                E_Usuario usuario = new E_Usuario();
-                usuario.setIdRegistroUsuario(id);
-                usuario.setCodigoUsuario(codigoUsuario);
-                boolean agregado = AgregaUsuario(usuario);
-                if (agregado) {
-                    boolean actualizaArchivo = opciones.guardarUsuariosArchivo();
-                    if (actualizaArchivo) {
-                        ArchivoLogs.getInstance().grabaLogFileAdministrador("------ El usuario [" + usuario.toString() + "] fue agregado.", false);
-                        JOptionPane.showMessageDialog(this, "El usuario ha sido agregada exitosamente", "Usuarios", JOptionPane.INFORMATION_MESSAGE);
-                        opciones.realizarBKarchivo();
-                        limpiarCampos();
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(this, "El usuario usuario '" + codigoUsuario + "' ya existe.", "Usuarios", JOptionPane.ERROR_MESSAGE);
+        if (!codigoUsuario.isEmpty()) {
+            E_Usuario usuario = new E_Usuario();
+            usuario.setIdRegistroUsuario(id);
+            usuario.setCodigoUsuario(codigoUsuario);
+            boolean agregado = AgregaUsuario(usuario);
+            if (agregado) {
+                boolean actualizaArchivo = opciones.guardarUsuariosArchivo();
+                if (actualizaArchivo) {
+                    ArchivoLogs.getInstance().grabaLogFileAdministrador("------ El usuario [" + usuario.toString() + "] fue agregado.", false);
+                    JOptionPane.showMessageDialog(this, "El usuario ha sido agregada exitosamente", "Usuarios", JOptionPane.INFORMATION_MESSAGE);
+                    opciones.realizarBKarchivo();
+                    limpiarCampos();
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Debe ingresar el Usuario.", "Alerta", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "El usuario usuario '" + codigoUsuario + "' ya existe.", "Usuarios", JOptionPane.ERROR_MESSAGE);
             }
+        } else {
+            JOptionPane.showMessageDialog(this, "Debe ingresar el Usuario.", "Alerta", JOptionPane.ERROR_MESSAGE);
+        }
 
 
     }//GEN-LAST:event_btnMUGuardarActionPerformed

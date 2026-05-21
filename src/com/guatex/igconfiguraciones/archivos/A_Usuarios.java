@@ -21,39 +21,53 @@ public class A_Usuarios {
     private final String rutaBK = Parametros.getRutaRaiz() + "BACKUP_IMPRESION_GUATEX\\BK_USUARIOS\\" + nombreArchivo;
 
     public ArrayList<E_Usuario> usuariosRegistrados() {
-        ArrayList lista = new ArrayList<>();
+        return usuariosRegistrados(false);
+    }
+
+    private ArrayList<E_Usuario> usuariosRegistrados(boolean desdeBackup) {
+        ArrayList<E_Usuario> lista = new ArrayList<>();
         try {
             File archivoTxt = new File(rutaArchivo);
+
             if (!archivoTxt.exists()) {
-                System.out.println("x/x/x El archivo de Usuarios no exite x/x/x");
+                System.out.println("x/x/x El archivo de Usuarios no existe x/x/x");
                 archivoTxt.getParentFile().mkdirs();
                 archivoTxt.createNewFile();
-                System.out.println("      El archivo de Usuarios fue creado y se probará realizar una restauración desde BK");
-                if (restaurarDesdeBK()) {
-                    return usuariosRegistrados();
-                }
-            } else {
-                if (archivoTxt.length() == 0) {
-                    System.out.println("** Archivo de Usuarios vacío **");
-                    System.out.println("   Se probará realizar una restauración desde el backup...");
-                    if (restaurarDesdeBK()) {
-                        return usuariosRegistrados();
-                    }
+                System.out.println("      El archivo de Usuarios fue creado. Intentando restaurar desde BK...");
+
+                if (!desdeBackup && restaurarDesdeBK()) {
+                    return usuariosRegistrados(true);
                 } else {
-                    System.out.println(">> Archivo de Usuarios con datos <<");
-                    try (BufferedReader reader = new BufferedReader(new FileReader(archivoTxt))) {
-                        String registro;
-                        while ((registro = reader.readLine()) != null) {
-                            E_Usuario imp = new E_Usuario().getUsuario(registro);
-                            lista.add(imp);
-                        }
+                    System.out.println("** No se pudo restaurar desde BK o archivo BK también vacío **");
+                }
+
+            } else if (archivoTxt.length() == 0) {
+                System.out.println("** Archivo de Usuarios vacío **");
+
+                if (!desdeBackup && restaurarDesdeBK()) {
+                    System.out.println("   Restauración desde BK exitosa. Releyendo...");
+                    return usuariosRegistrados(true);
+                } else {
+                    System.out.println("** No se pudo restaurar o BK también vacío. Se retorna lista vacía **");
+                }
+
+            } else {
+                System.out.println(">> Archivo de Usuarios con datos <<");
+                try (BufferedReader reader = new BufferedReader(new FileReader(archivoTxt))) {
+                    String registro;
+                    while ((registro = reader.readLine()) != null) {
+                        E_Usuario imp = new E_Usuario().getUsuario(registro);
+                        lista.add(imp);
                     }
                 }
             }
+
         } catch (IOException e) {
-            ArchivoLogs.getInstance().grabaLogFileAdministrador("------ Excepción - Archivo usuarios - [" + e.getLocalizedMessage() + "]", true);
+            ArchivoLogs.getInstance().grabaLogFileAdministrador(
+                    "------ Excepción - Archivo usuarios - [" + e.getLocalizedMessage() + "]", true);
             e.printStackTrace();
         }
+
         return lista;
     }
 

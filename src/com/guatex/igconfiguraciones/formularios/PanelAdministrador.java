@@ -56,7 +56,7 @@ public class PanelAdministrador extends javax.swing.JFrame {
         btnMParams = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Agente de Impresión Guatex - 1.0.1");
+        setTitle("Agente de Impresión Guatex - 1.0.0");
         setIconImages(getIconImages());
         setResizable(false);
 
