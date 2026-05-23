@@ -24,9 +24,9 @@ import org.apache.http.client.methods.HttpPatch;
  */
 public class G_ConsultasBD {
 
-//    private final String urlAPI = "https://sig.guatex.gt";
+    private final String urlAPI = "https://sig.guatex.gt";
 //    private final String urlAPI = "http://localhost:8088";
-    private final String urlAPI = "https://desarrollo.guatex.gt";
+//    private final String urlAPI = "https://desarrollo.guatex.gt";
 
     private final String prefijo = "/apidevimpresiones";
 

@@ -151,6 +151,11 @@ public final class P_Impresoras extends javax.swing.JPanel {
         jLabel2.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
 
         txtNombreImpresora.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        txtNombreImpresora.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNombreImpresoraKeyTyped(evt);
+            }
+        });
 
         jLabel3.setBackground(new java.awt.Color(238, 238, 238));
         jLabel3.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
@@ -228,6 +233,11 @@ public final class P_Impresoras extends javax.swing.JPanel {
         }
 
         txtIPImpresora.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        txtIPImpresora.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtIPImpresoraKeyTyped(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -306,22 +316,22 @@ public final class P_Impresoras extends javax.swing.JPanel {
         String nombre = txtNombreImpresora.getText().trim();
         String direccionIP = txtIPImpresora.getText().trim();
         if (!nombre.isEmpty() || !direccionIP.isEmpty()) {
-                E_Impresora impresora = new E_Impresora();
-                impresora.setIdImpresora(id);
-                impresora.setNombre(nombre);
-                impresora.setIp(direccionIP);
-                boolean agregado = AgregaImpresora(impresora);
-                if (agregado) {
-                    boolean actualizaArchivo = opciones.guardarImpresorasArchivo();
-                    if (actualizaArchivo) {
-                        ArchivoLogs.getInstance().grabaLogFileAdministrador("------ La impresora [" + impresora.getNombre() + "] fue agregada.", false);
-                        JOptionPane.showMessageDialog(this, "Impresora agregada exitosamente", "Impresoras", JOptionPane.INFORMATION_MESSAGE);
-                        opciones.realizarBKarchivo();
-                        limpiarCampos();
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(this, "La impresora con IP '" + direccionIP + "' ya existe.", "Impresoras", JOptionPane.ERROR_MESSAGE);
+            E_Impresora impresora = new E_Impresora();
+            impresora.setIdImpresora(id);
+            impresora.setNombre(nombre);
+            impresora.setIp(direccionIP);
+            boolean agregado = AgregaImpresora(impresora);
+            if (agregado) {
+                boolean actualizaArchivo = opciones.guardarImpresorasArchivo();
+                if (actualizaArchivo) {
+                    ArchivoLogs.getInstance().grabaLogFileAdministrador("------ La impresora [" + impresora.getNombre() + "] fue agregada.", false);
+                    JOptionPane.showMessageDialog(this, "Impresora agregada exitosamente", "Impresoras", JOptionPane.INFORMATION_MESSAGE);
+                    opciones.realizarBKarchivo();
+                    limpiarCampos();
                 }
+            } else {
+                JOptionPane.showMessageDialog(this, "La impresora con IP '" + direccionIP + "' ya existe.", "Impresoras", JOptionPane.ERROR_MESSAGE);
+            }
         } else {
             JOptionPane.showMessageDialog(this, "Debe ingresar el nombre y la IP de la impresora.", "Alerta", JOptionPane.ERROR_MESSAGE);
         }
@@ -332,8 +342,23 @@ public final class P_Impresoras extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_tbImpresorasMouseClicked
 
+    private void txtNombreImpresoraKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreImpresoraKeyTyped
+        // TODO add your handling code here:
+        if (txtNombreImpresora.getText().length() >= 45) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtNombreImpresoraKeyTyped
+
+    private void txtIPImpresoraKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIPImpresoraKeyTyped
+        // TODO add your handling code here:
+        if (txtIPImpresora.getText().length() >= 45) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtIPImpresoraKeyTyped
+
     private void limpiarCampos() {
         txtNombreImpresora.setText("");
+        txtIPImpresora.setText("");
         grupoConexion.clearSelection();
         cargarTablaImpresoras();
     }
