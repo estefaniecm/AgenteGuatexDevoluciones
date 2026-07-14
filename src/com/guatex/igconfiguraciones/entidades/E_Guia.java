@@ -40,6 +40,96 @@ public class E_Guia {
     private List<E_GuiaDetalle> lineasDetalle;
     private List<E_GuiaHija> guiasHijas;
 
+    private String tipoGuia = "";
+    private String razonNoEntrega = "";
+    private String solucionTipo = "";
+    private String solucionUbicacionActual = "";
+    private String solucionDireccion = "";
+    private String solucionTelefono = "";
+    private String solucionDetalle = "";
+    private String solucionUsuarioRegistro = "";
+    private String solucionFechaRegistro = "";
+
+    public String getSolucionUbicacionActual() {
+        return solucionUbicacionActual;
+    }
+
+    public void setSolucionUbicacionActual(String solucionUbicacionActual) {
+        this.solucionUbicacionActual = solucionUbicacionActual;
+    }
+
+    public String getSolucionDireccion() {
+        return solucionDireccion;
+    }
+
+    public void setSolucionDireccion(String solucionDireccion) {
+        this.solucionDireccion = solucionDireccion;
+    }
+
+    public String getSolucionTelefono() {
+        return solucionTelefono;
+    }
+
+    public void setSolucionTelefono(String solucionTelefono) {
+        this.solucionTelefono = solucionTelefono;
+    }
+
+    public String getSolucionUsuarioRegistro() {
+        return solucionUsuarioRegistro;
+    }
+
+    public void setSolucionUsuarioRegistro(String solucionUsuarioRegistro) {
+        this.solucionUsuarioRegistro = solucionUsuarioRegistro;
+    }
+
+    public String getSolucionFechaRegistro() {
+        return solucionFechaRegistro;
+    }
+
+    public void setSolucionFechaRegistro(String solucionFechaRegistro) {
+        this.solucionFechaRegistro = solucionFechaRegistro;
+    }
+
+    public String getUbicacionActual() {
+        return solucionUbicacionActual;
+    }
+
+    public void setUbicacionActual(String ubicacionActual) {
+        this.solucionUbicacionActual = ubicacionActual;
+    }
+
+    public String getTipoGuia() {
+        return tipoGuia;
+    }
+
+    public void setTipoGuia(String tipoGuia) {
+        this.tipoGuia = tipoGuia;
+    }
+
+    public String getRazonNoEntrega() {
+        return razonNoEntrega;
+    }
+
+    public void setRazonNoEntrega(String razonNoEntrega) {
+        this.razonNoEntrega = razonNoEntrega;
+    }
+
+    public String getSolucionTipo() {
+        return solucionTipo;
+    }
+
+    public void setSolucionTipo(String solucionTipo) {
+        this.solucionTipo = solucionTipo;
+    }
+
+    public String getSolucionDetalle() {
+        return solucionDetalle;
+    }
+
+    public void setSolucionDetalle(String solucionDetalle) {
+        this.solucionDetalle = solucionDetalle;
+    }
+
     public String getRecogeOficina() {
         return recogeOficina;
     }

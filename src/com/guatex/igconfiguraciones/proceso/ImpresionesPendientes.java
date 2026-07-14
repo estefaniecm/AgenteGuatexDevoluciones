@@ -13,6 +13,7 @@ import com.guatex.igconfiguraciones.modelos.M_ZPLguia;
 import com.guatex.igconfiguraciones.principal.GTXConfiguracionIG;
 import com.guatex.igconfiguraciones.util.Parametros;
 import java.awt.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -142,7 +143,7 @@ public class ImpresionesPendientes {
 
                                     for (E_Guia guiaxu : ixu.getGuiasImpresion()) {
 
-                                        generaImpresionGuia(guiaxu, ipImpresora);
+                                        generaImpresionGuia(guiaxu, ipImpresora, ixu.getUsuario().toString());
 
                                     }
 
@@ -220,50 +221,73 @@ public class ImpresionesPendientes {
 
         }
 
-        private void generaImpresionGuia(E_Guia guia, String ipImpresora) {
+        private void generaImpresionGuia(E_Guia guia, String ipImpresora, String usuario) {
             M_ZPLguia zpl = new M_ZPLguia();
-            int cantidadPiezas = Integer.valueOf(guia.getPiezas());
-            int cantidadgHijas = guia.getGuiasHijas().size();
-            int impExitosas = 1;
-            if (cantidadPiezas > 1 && cantidadgHijas > 0) { //Guía con guias hijas
-                StringBuilder datosGuia = zpl.generaZPL(guia, 1, guia.getNumeroGuia());
-                //System.out.println(">> ZPL: \n" + datosGuia + "\n<<\n");
+
+            if (guia.getTipoGuia().equals("SOL")) {
+                System.out.println(">> TIPO GUÍA SOLUCIÓN<<");
+                LocalDateTime fechaHoraImpresion = LocalDateTime.now();
+                
+                StringBuilder datosGuia = zpl.generaZPLSolucion(guia, usuario, fechaHoraImpresion);
+                System.out.println(">> ZPL: \n" + datosGuia + "\n<<\n");
                 if (new G_Impresora().imprimirGuia(ipImpresora, datosGuia)) {
-                    impExitosas++;
+                    String impreso = new G_ConsultasBD().actualizarEstadoImpresion(guia.getNumeroGuia(), ipImpresora, usuario, fechaHoraImpresion, guia.getTipoGuia());
+                    if (!impreso.equals("OK")) {
+                        ArchivoLogs.getInstance().grabaLogFileAdministrador("------ Error de actualización ----> guía solución: " + guia.getNumeroGuia(), true);
+                        System.out.println("Error de actualización ----> guía solución: " + guia.getNumeroGuia());
+                    } else {
+                        ArchivoLogs.getInstance().grabaLogFileAdministrador("------ Guía solución impresa [" + guia.getNumeroGuia() + "]", false);
+                        System.out.println("Guía solución: " + guia.getNumeroGuia() + " impresa ---> " + impreso);
+                    }
                 }
-                int contador = 2;
-                for (E_GuiaHija s : guia.getGuiasHijas()) {
-                    guia.setGuiaMadre("N");
-                    StringBuilder datosGuiaHija = zpl.generaZPL(guia, contador, s.getHguiaHija());
-                    //System.out.println(">> ZPL: \n" + datosGuiaHija + "\n<<\n");
-                    if (new G_Impresora().imprimirGuia(ipImpresora, datosGuiaHija)) {
+
+            } else if (guia.getTipoGuia().equals("DEV")) {
+                System.out.println(">> TIPO GUÍA DEVOLUCIÓN <<");
+                int cantidadPiezas = Integer.valueOf(guia.getPiezas());
+                int cantidadgHijas = guia.getGuiasHijas().size();
+                int impExitosas = 1;
+
+                if (cantidadPiezas > 1 && cantidadgHijas > 0) { //Guía con guias hijas
+                    StringBuilder datosGuia = zpl.generaZPLDevolucion(guia, 1, guia.getNumeroGuia());
+                    //System.out.println(">> ZPL: \n" + datosGuia + "\n<<\n");
+                    if (new G_Impresora().imprimirGuia(ipImpresora, datosGuia)) {
                         impExitosas++;
                     }
-                    contador++;
-                }
-                if (impExitosas == contador) {
-                    String impreso = new G_ConsultasBD().actualizarEstadoImpresion(guia.getNumeroGuia(), ipImpresora);
-                    if (!impreso.equals("OK")) {
-                        System.out.println("Error de actualización ----> guía: " + guia.getNumeroGuia());
-                    } else {
-                        ArchivoLogs.getInstance().grabaLogFileAdministrador("------ Guía impresa [" + guia.getNumeroGuia() + "] - Piezas [" + guia.getPiezas() + "]", false);
-                        System.out.println("Guía " + guia.getNumeroGuia() + " impresa ---> " + impreso);
+                    int contador = 2;
+                    for (E_GuiaHija s : guia.getGuiasHijas()) {
+                        guia.setGuiaMadre("N");
+                        StringBuilder datosGuiaHija = zpl.generaZPLDevolucion(guia, contador, s.getHguiaHija());
+                        //System.out.println(">> ZPL: \n" + datosGuiaHija + "\n<<\n");
+                        if (new G_Impresora().imprimirGuia(ipImpresora, datosGuiaHija)) {
+                            impExitosas++;
+                        }
+                        contador++;
                     }
-                }
-            } else { //Imprime 1 guía
-                StringBuilder datosGuia = zpl.generaZPL(guia, 1, guia.getNumeroGuia());
-                //System.out.println(">> ZPL: \n" + datosGuia + "\n<<\n");
-                if (new G_Impresora().imprimirGuia(ipImpresora, datosGuia)) {
-                    String impreso = new G_ConsultasBD().actualizarEstadoImpresion(guia.getNumeroGuia(), ipImpresora);
-                    if (!impreso.equals("OK")) {
-                        ArchivoLogs.getInstance().grabaLogFileAdministrador("------ Error de actualización ----> guía: " + guia.getNumeroGuia(), true);
-                        System.out.println("Error de actualización ----> guía: " + guia.getNumeroGuia());
-                    } else {
-                        ArchivoLogs.getInstance().grabaLogFileAdministrador("------ Guía impresa [" + guia.getNumeroGuia() + "] - Piezas [" + guia.getPiezas() + "]", false);
-                        System.out.println("Guía " + guia.getNumeroGuia() + " impresa ---> " + impreso);
+                    if (impExitosas == contador) {
+                        String impreso = new G_ConsultasBD().actualizarEstadoImpresion(guia.getNumeroGuia(), ipImpresora, "", null, guia.getTipoGuia());
+                        if (!impreso.equals("OK")) {
+                            System.out.println("Error de actualización ----> guía: " + guia.getNumeroGuia());
+                        } else {
+                            ArchivoLogs.getInstance().grabaLogFileAdministrador("------ Guía impresa [" + guia.getNumeroGuia() + "] - Piezas [" + guia.getPiezas() + "]", false);
+                            System.out.println("Guía " + guia.getNumeroGuia() + " impresa ---> " + impreso);
+                        }
                     }
-                }
-            }//fin else
+                } else { //Imprime 1 guía
+                    StringBuilder datosGuia = zpl.generaZPLDevolucion(guia, 1, guia.getNumeroGuia());
+                    //System.out.println(">> ZPL: \n" + datosGuia + "\n<<\n");
+                    if (new G_Impresora().imprimirGuia(ipImpresora, datosGuia)) {
+                        String impreso = new G_ConsultasBD().actualizarEstadoImpresion(guia.getNumeroGuia(), ipImpresora, "", null, guia.getTipoGuia());
+                        if (!impreso.equals("OK")) {
+                            ArchivoLogs.getInstance().grabaLogFileAdministrador("------ Error de actualización ----> guía: " + guia.getNumeroGuia(), true);
+                            System.out.println("Error de actualización ----> guía: " + guia.getNumeroGuia());
+                        } else {
+                            ArchivoLogs.getInstance().grabaLogFileAdministrador("------ Guía impresa [" + guia.getNumeroGuia() + "] - Piezas [" + guia.getPiezas() + "]", false);
+                            System.out.println("Guía " + guia.getNumeroGuia() + " impresa ---> " + impreso);
+                        }
+                    }
+                }//fin else
+            }
+
         }
     }
 

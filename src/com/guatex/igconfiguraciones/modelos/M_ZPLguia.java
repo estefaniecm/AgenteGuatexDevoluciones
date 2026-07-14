@@ -1,6 +1,8 @@
 package com.guatex.igconfiguraciones.modelos;
 
 import com.guatex.igconfiguraciones.entidades.E_Guia;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  *
@@ -10,7 +12,7 @@ public class M_ZPLguia {
 
     private final int inicioTexto = 160;
 
-    public StringBuilder generaZPL(E_Guia guia, int contadorPiezas, String guiaImprimir) {
+    public StringBuilder generaZPLDevolucion(E_Guia guia, int contadorPiezas, String guiaImprimir) {
         StringBuilder ZPLGuiaImprimir = new StringBuilder();
         try {
             ZPLGuiaImprimir.append("^XA\n");
@@ -38,6 +40,66 @@ public class M_ZPLguia {
         }
 
         return ZPLGuiaImprimir;
+    }
+
+    public StringBuilder generaZPLSolucion(E_Guia guia, String usuario, LocalDateTime fechaHoraImpresion) {
+        StringBuilder zpl = new StringBuilder();
+
+        String fechaImpresionFormateada = fechaHoraImpresion.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+
+        zpl.append("^XA");
+        zpl.append("^SZ2^PW609^LL1250^PON^PR6,6^PMN");
+        zpl.append("^MNY^LS-20^MTD^MMT,N^MPE^FS");
+        zpl.append("^JUS^LRN^CI28^FS");
+
+        zpl.append("^FO350,95^IME:IMG.GRF,1,1^FS");
+
+        zpl.append("^FO16,110^A0,N,25,25^FDNúmero de guia^FS");
+        zpl.append("^FO15,145^A0,N,50,50^FD").append(guia.getNumeroGuia()).append("^FS");
+
+        zpl.append("^FO15,220^A0,N,24,24^FR^FDDATOS DE LA GUIA^FS");
+        zpl.append("^FO0,245^GB590,2,2^FS");
+
+        zpl.append("^FO15,265^A0,N,20,20^FDRazó de No Entrega^FS");
+        zpl.append("^FO15,292^A0,N,18,18^FB565,3,0,L,0^FD").append(guia.getRazonNoEntrega()).append("^FS");
+
+        zpl.append("^FO15,350^A0,N,20,20^FDTipo de solución^FS");
+        zpl.append("^FO15,377^A0,N,18,18^FB565,3,0,L,0^FD").append(guia.getSolucionTipo()).append("^FS");
+
+        zpl.append("^FO15,435^A0,N,20,20^FDUbicación actual^FS");
+        zpl.append("^FO15,462^A0,N,18,18^FB565,3,0,L,0^FD").append(guia.getUbicacionActual()).append("^FS");
+
+        zpl.append("^FO15,520^A0,N,24,24^FDDirección^FS");
+        zpl.append("^FO15,547^A0,N,22,22^FB565,3,0,L,0^FD").append(guia.getSolucionDireccion()).append("^FS");
+
+        zpl.append("^FO15,615^A0,N,24,24^FDTeléfono^FS");
+        zpl.append("^FO15,642^A0,N,22,22^FB565,2,0,L,0^FD").append(guia.getTelefonoDestinatario()).append("^FS");
+
+        zpl.append("^FO15,690^A0,N,24,24^FDDetalle de la solución^FS");
+        zpl.append("^FO15,717^A0,N,22,22^FB565,10,0,L,0^FD").append(guia.getSolucionDetalle()).append("^FS");
+
+        zpl.append("^FO0,970^GB590,2,2^FS");
+
+        zpl.append("^FO15,980^A0,N,15,15^FDUsuario: ").append(guia.getSolucionUsuarioRegistro()).append("^FS");
+        zpl.append("^FO290,980^A0,N,15,15^FDFecha y hora de registro: ").append(guia.getSolucionFechaRegistro()).append("^FS");
+
+        //zpl.append("^FO15,1000^A0,N,15,15^FDImpreso: ").append(usuario).append("^FS");
+        zpl.append("^FO290,1000^A0,N,15,15^FDFecha y hora de impresion: ").append(fechaImpresionFormateada).append("^FS");
+
+        zpl.append("^FO15,1040^A0,N,15,15^FB565,2,0,C,0^FDETIQUETA DE APOYO OPERATIVO INTERNO. NO SUSTITUYE LA GUIA ORIGINAL DEL ENVIO.^FS");
+
+        zpl.append("^FO130,1070");
+        zpl.append("^BY3");
+        zpl.append("^BCN,90,N,N,N,A");
+        zpl.append("^FD").append(guia.getNumeroGuia()).append("^FS");
+
+        zpl.append("^FO235,1170");
+        zpl.append("^A0,N,24,24");
+        zpl.append("^FD").append(guia.getNumeroGuia()).append("^FS");
+
+        zpl.append("^XZ");
+
+        return zpl;
     }
 
     private StringBuilder configuracionImpresion() {
