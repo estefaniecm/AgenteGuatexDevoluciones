@@ -36,7 +36,6 @@ public class G_ConsultasBD {
         try (CloseableHttpClient httpclient = HttpClients.createDefault();) {
             Gson gson = new Gson();
             String jsonUsuarios = gson.toJson(usuarios);
-            System.out.println("usuario.... " + jsonUsuarios);
             HttpPost httppost = new HttpPost(urlAPI + prefijo + "/agente/impresiones");
             httppost.addHeader("Content-Type", "application/json");
             StringEntity entity = new StringEntity(jsonUsuarios, StandardCharsets.UTF_8);

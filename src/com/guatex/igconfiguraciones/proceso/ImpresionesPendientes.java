@@ -225,11 +225,10 @@ public class ImpresionesPendientes {
             M_ZPLguia zpl = new M_ZPLguia();
 
             if (guia.getTipoGuia().equals("SOL")) {
-                System.out.println(">> TIPO GUÍA SOLUCIÓN<<");
                 LocalDateTime fechaHoraImpresion = LocalDateTime.now();
                 
                 StringBuilder datosGuia = zpl.generaZPLSolucion(guia, usuario, fechaHoraImpresion);
-                System.out.println(">> ZPL: \n" + datosGuia + "\n<<\n");
+                //System.out.println(">> ZPL: \n" + datosGuia + "\n<<\n");
                 if (new G_Impresora().imprimirGuia(ipImpresora, datosGuia)) {
                     String impreso = new G_ConsultasBD().actualizarEstadoImpresion(guia.getNumeroGuia(), ipImpresora, usuario, fechaHoraImpresion, guia.getTipoGuia());
                     if (!impreso.equals("OK")) {
@@ -242,7 +241,6 @@ public class ImpresionesPendientes {
                 }
 
             } else if (guia.getTipoGuia().equals("DEV")) {
-                System.out.println(">> TIPO GUÍA DEVOLUCIÓN <<");
                 int cantidadPiezas = Integer.valueOf(guia.getPiezas());
                 int cantidadgHijas = guia.getGuiasHijas().size();
                 int impExitosas = 1;
@@ -269,7 +267,7 @@ public class ImpresionesPendientes {
                             System.out.println("Error de actualización ----> guía: " + guia.getNumeroGuia());
                         } else {
                             ArchivoLogs.getInstance().grabaLogFileAdministrador("------ Guía impresa [" + guia.getNumeroGuia() + "] - Piezas [" + guia.getPiezas() + "]", false);
-                            System.out.println("Guía " + guia.getNumeroGuia() + " impresa ---> " + impreso);
+                            System.out.println("Guía devolución: " + guia.getNumeroGuia() + " impresa ---> " + impreso);
                         }
                     }
                 } else { //Imprime 1 guía

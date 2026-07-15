@@ -73,7 +73,7 @@ public class M_ZPLguia {
         zpl.append("^FO15,547^A0,N,22,22^FB565,3,0,L,0^FD").append(guia.getSolucionDireccion()).append("^FS");
 
         zpl.append("^FO15,615^A0,N,24,24^FDTeléfono^FS");
-        zpl.append("^FO15,642^A0,N,22,22^FB565,2,0,L,0^FD").append(guia.getTelefonoDestinatario()).append("^FS");
+        zpl.append("^FO15,642^A0,N,22,22^FB565,2,0,L,0^FD").append(guia.getSolucionTelefono()).append("^FS");
 
         zpl.append("^FO15,690^A0,N,24,24^FDDetalle de la solución^FS");
         zpl.append("^FO15,717^A0,N,22,22^FB565,10,0,L,0^FD").append(guia.getSolucionDetalle()).append("^FS");
@@ -131,7 +131,7 @@ public class M_ZPLguia {
         header.append("^BY3");
         header.append("^A0N,40,30");
         header.append("^BC,100,N,N,N,A");
-        header.append("^A2N,40,30");//A0N
+        header.append("^A2N,40,30");
         header.append("^FD").append(guiaImprimir);
         header.append("^FS\n");
 

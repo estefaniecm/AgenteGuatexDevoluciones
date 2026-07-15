@@ -54,7 +54,6 @@ public class E_Impresora {
     }
 
     public E_Impresora getImpresora(String linea) {
-        System.out.println("linea impresora: "+linea);
         String[] datos = linea.split(",");
         E_Impresora i = new E_Impresora();
         if (datos.length == 3) {

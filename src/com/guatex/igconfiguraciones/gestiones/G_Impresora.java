@@ -56,12 +56,11 @@ public class G_Impresora {
 
             out.write(ZPLguia.toString().getBytes("UTF-8"));
             out.flush();
-            System.out.println("IMPRESO");
 
             return true;
 
         } catch (Exception e) {
-
+            System.out.println("Error al imprimir [" + ipImpresora + "]");
             System.err.println(e.getMessage());
 
             return false;

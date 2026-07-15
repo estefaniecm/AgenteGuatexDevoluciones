@@ -34,9 +34,7 @@ public class E_Usuario {
     }
 
     public E_Usuario getUsuario(String linea) {
-        System.out.println("linea: "+linea);
         String[] datos = linea.split(",");
-        System.out.println("datos length: "+datos.length);
         E_Usuario u = new E_Usuario();
         if (datos.length == 2) {
             u.setIdRegistroUsuario(datos[0]);
