@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import javax.print.PrintService;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -226,7 +225,7 @@ public class ImpresionesPendientes {
 
             if (guia.getTipoGuia().equals("SOL")) {
                 LocalDateTime fechaHoraImpresion = LocalDateTime.now();
-                
+
                 StringBuilder datosGuia = zpl.generaZPLSolucion(guia, usuario, fechaHoraImpresion);
                 //System.out.println(">> ZPL: \n" + datosGuia + "\n<<\n");
                 if (new G_Impresora().imprimirGuia(ipImpresora, datosGuia)) {
@@ -267,7 +266,7 @@ public class ImpresionesPendientes {
                             System.out.println("Error de actualización ----> guía: " + guia.getNumeroGuia());
                         } else {
                             ArchivoLogs.getInstance().grabaLogFileAdministrador("------ Guía impresa [" + guia.getNumeroGuia() + "] - Piezas [" + guia.getPiezas() + "]", false);
-                            System.out.println("Guía devolución: " + guia.getNumeroGuia() + " impresa ---> " + impreso);
+                            System.out.println("Guía devolución: " + guia.getNumeroGuia() + " - " + cantidadPiezas + " impresa ---> " + impreso);
                         }
                     }
                 } else { //Imprime 1 guía
@@ -280,7 +279,7 @@ public class ImpresionesPendientes {
                             System.out.println("Error de actualización ----> guía: " + guia.getNumeroGuia());
                         } else {
                             ArchivoLogs.getInstance().grabaLogFileAdministrador("------ Guía impresa [" + guia.getNumeroGuia() + "] - Piezas [" + guia.getPiezas() + "]", false);
-                            System.out.println("Guía " + guia.getNumeroGuia() + " impresa ---> " + impreso);
+                            System.out.println("Guía devolución: " + guia.getNumeroGuia() + " - " + cantidadPiezas + " impresa ---> " + impreso);
                         }
                     }
                 }//fin else
@@ -339,21 +338,6 @@ public class ImpresionesPendientes {
         return hiloBusquedaImpresiones;
     }
 
-//    private static void mostrarNotificacion(ArrayList<E_ImpresionesUsuario> listadoGuiasxUsuario) {
-//        System.out.println("---> mostrarNotificacion()");
-//        
-//        for (E_ImpresionesUsuario ixu : listadoGuiasxUsuario) {
-//            StringBuilder mensaje = new StringBuilder();
-//            mensaje.append(ixu.getUsuario().getCodigoUsuario()+" >");
-//            for (E_Guia guiaxu : ixu.getGuiasImpresion()) {
-//                mensaje.append("-").append(guiaxu.getNumeroGuia());
-//            }
-//                    GTXConfiguracionIG.getTrayIcono().displayMessage("GUÍAS POR IMPRIMIR:", mensaje.toString(), TrayIcon.MessageType.NONE);
-//
-//        }
-//
-//
-//    }
     public static boolean isRunning() {
         return ImpresionesPendientes.running;
     }
