@@ -722,7 +722,7 @@ public class M_ZPLguia {
         zpl.append("^MNY^LS-10^MTD^MMT,N^MPE^FS");
         zpl.append("^JUS^LRN^CI28^FS");
 
-        zpl.append("^FO350,95^IME:IMG.GRF,1,1^FS");
+        zpl.append("^FO380,95^IME:IMG.GRF,1,1^FS");
 
         zpl.append("^FO16,110^A0,N,25,25^FDNúmero de guia^FS");
         zpl.append("^FO15,145").append(GeneradorZPL.generarCampoGF(guia.getNumeroGuia(), 40)).append("^FS");
