@@ -10,12 +10,12 @@ import java.io.InputStream;
  *
  * @author ESTEFANIECM
  */
-public class GeneradorZPLcero {
+public class GeneradorZPL {
 
     private static Font fuenteCeroTachado;
 
     static {
-        try (InputStream is = GeneradorZPLcero.class.getResourceAsStream("/com/guatex/igconfiguraciones/util/pixelmix.ttf")) {
+        try (InputStream is = GeneradorZPL.class.getResourceAsStream("/com/guatex/igconfiguraciones/util/pixelmix.ttf")) {
             if (is == null) {
                 throw new IOException("No se encontró el recurso .ttf en el classpath");
             }
@@ -28,8 +28,8 @@ public class GeneradorZPLcero {
 
     /**
      * Genera el bloque ^GF de ZPL para un texto, usando la fuente con cero
-     * tachado. Incluye recorte de filas en blanco y compresión ASCII nativa
-     * de ZPL para reducir el tamaño del campo generado.
+     * tachado. Incluye recorte de filas en blanco y compresión ASCII nativa de
+     * ZPL para reducir el tamaño del campo generado.
      *
      * @param texto texto a renderizar
      * @param alturaPuntos altura deseada del texto en puntos ZPL
@@ -195,4 +195,5 @@ public class GeneradorZPLcero {
         }
         return codigo.toString();
     }
+
 }

@@ -83,7 +83,7 @@ public class M_ZPLguia {
             textoLinea = guia.getPuntoOrigen() + " " + guiaImprimir + " - " + guia.getNumeroGuia();
         }
         header.append("^FO3,").append(inicioTexto + 10);
-        header.append(GeneradorZPLcero.generarCampoGF(textoLinea, 23));
+        header.append(GeneradorZPL.generarCampoGF(textoLinea, 23));
         header.append("^FS");
 
         return header;
@@ -489,7 +489,7 @@ public class M_ZPLguia {
         }
 
         noGuiaIMG.append("^FO10,").append(inicioTexto + 375);
-        noGuiaIMG.append(GeneradorZPLcero.generarCampoGF(textoNoGuia, 40));
+        noGuiaIMG.append(GeneradorZPL.generarCampoGF(textoNoGuia, 40));
         noGuiaIMG.append("^FS");
 
         noGuiaIMG.append("^FO370,").append(inicioTexto + 315).append(",0");
@@ -714,22 +714,18 @@ public class M_ZPLguia {
     public StringBuilder generaZPLSolucion(E_Guia guia, String usuario, LocalDateTime fechaHoraImpresion) {
         StringBuilder zpl = new StringBuilder();
 
-        final int anchoEtiqueta = 609;
-        final int anchoModuloBarras = 3;
-
-        int posicionXBarras = calcularPosicionXCentrado(guia.getNumeroGuia(), anchoEtiqueta, anchoModuloBarras);
-
+        String textoSolucion = "SOLUCION";
         String fechaImpresionFormateada = fechaHoraImpresion.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
 
         zpl.append("^XA");
         zpl.append("^SZ2^PW609^LL1250^PON^PR6,6^PMN");
-        zpl.append("^MNY^LS-20^MTD^MMT,N^MPE^FS");
+        zpl.append("^MNY^LS-10^MTD^MMT,N^MPE^FS");
         zpl.append("^JUS^LRN^CI28^FS");
 
         zpl.append("^FO350,95^IME:IMG.GRF,1,1^FS");
 
         zpl.append("^FO16,110^A0,N,25,25^FDNúmero de guia^FS");
-        zpl.append("^FO15,145").append(GeneradorZPLcero.generarCampoGF(guia.getNumeroGuia(), 40)).append("^FS");
+        zpl.append("^FO15,145").append(GeneradorZPL.generarCampoGF(guia.getNumeroGuia(), 40)).append("^FS");
 
         zpl.append("^FO15,220^A0,N,24,24^FR^FDDATOS DE LA GUIA^FS");
         zpl.append("^FO0,245^GB590,2,2^FS");
@@ -762,31 +758,13 @@ public class M_ZPLguia {
 
         zpl.append("^FO15,1040^A0,N,15,15^FB565,2,0,C,0^FDETIQUETA DE APOYO OPERATIVO INTERNO. NO SUSTITUYE LA GUIA ORIGINAL DEL ENVIO.^FS");
 
-        // Código de barras
-        zpl.append("^FO").append(posicionXBarras).append(",1070");
-        zpl.append("^BY").append(anchoModuloBarras);
-        zpl.append("^BCN,90,N,N,N,N");
-        zpl.append("^FD").append(guia.getNumeroGuia()).append("^FS");
-
-        zpl.append("^FO0,1170");
-        zpl.append("^FB609,1,0,C,0");
-        zpl.append("^A0,N,24,24");
-        zpl.append("^FD").append(guia.getNumeroGuia()).append("^FS");
+        zpl.append("^FO20,1080^GB550,100,3^FS");
+        zpl.append("^FO26,1086^GB538,88,2^FS");
+        zpl.append("^FO40,1110^AAN,N,30,30^FB530,1,0,C,0^FD").append(textoSolucion).append("^FS");
 
         zpl.append("^XZ");
         System.out.println("ZPL: " + zpl.toString());
         return zpl;
     }
 
-    private int calcularAnchoCodigoBarras128(String contenido, int anchoModulo) {
-        int n = contenido.length();
-        int modulos = (n + 2) * 11 + 13;
-        return modulos * anchoModulo;
-    }
-
-    private int calcularPosicionXCentrado(String contenido, int anchoEtiqueta, int anchoModulo) {
-        int anchoBarras = calcularAnchoCodigoBarras128(contenido, anchoModulo);
-        int posicionX = (anchoEtiqueta - anchoBarras) / 2;
-        return Math.max(posicionX, 0);
-    }
 }
