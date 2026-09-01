@@ -49,6 +49,24 @@ public class E_Guia {
     private String solucionDetalle = "";
     private String solucionUsuarioRegistro = "";
     private String solucionFechaRegistro = "";
+    private int solucionReimpresion = 0;
+    private int solucionNumero = 0;
+
+    public int getSolucionReimpresion() {
+        return solucionReimpresion;
+    }
+
+    public void setSolucionReimpresion(int solucionReimpresion) {
+        this.solucionReimpresion = solucionReimpresion;
+    }
+
+    public int getSolucionNumero() {
+        return solucionNumero;
+    }
+
+    public void setSolucionNumero(int solucionNumero) {
+        this.solucionNumero = solucionNumero;
+    }
 
     public String getSolucionUbicacionActual() {
         return solucionUbicacionActual;

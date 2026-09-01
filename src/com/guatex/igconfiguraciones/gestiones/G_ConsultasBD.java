@@ -13,6 +13,7 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 import com.google.gson.reflect.TypeToken;
 import com.guatex.igconfiguraciones.entidades.E_ActualizarImpresion;
+import com.guatex.igconfiguraciones.entidades.E_Guia;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -25,9 +26,9 @@ import org.apache.http.client.methods.HttpPatch;
  */
 public class G_ConsultasBD {
 
-//    private final String urlAPI = "https://sig.guatex.gt";
+    private final String urlAPI = "https://sig.guatex.gt";
 //    private final String urlAPI = "http://localhost:8088";
-    private final String urlAPI = "https://desarrollo.guatex.gt";
+//    private final String urlAPI = "https://desarrollo.guatex.gt";
 
     private final String prefijo = "/apidevimpresiones";
 
@@ -55,7 +56,7 @@ public class G_ConsultasBD {
         return listaGuiasxImprimir;
     }
 
-    public String actualizarEstadoImpresion(String noguia, String ip, String usuario, LocalDateTime fechaHoraImpresion, String tipo) {
+    public String actualizarEstadoImpresion(E_Guia guia, String ip, String usuario, LocalDateTime fechaHoraImpresion) {
 
         String respuesta = "";
 
@@ -63,13 +64,7 @@ public class G_ConsultasBD {
 
             Gson gson = new Gson();
 
-            E_ActualizarImpresion req = new E_ActualizarImpresion();
-            req.setNoguia(noguia);
-            req.setIp(ip);
-            req.setUsuario(usuario);
-            req.setFechaImpresion(fechaHoraImpresion != null ? fechaHoraImpresion.toString() : "");
-            req.setTipoGuia(tipo);
-
+            E_ActualizarImpresion req = new E_ActualizarImpresion(guia.getNumeroGuia(), ip, usuario, (fechaHoraImpresion != null ? fechaHoraImpresion.toString() : ""), guia.getTipoGuia(), guia.getSolucionNumero());
             String json = gson.toJson(req);
 
             HttpPatch httppatch = new HttpPatch(

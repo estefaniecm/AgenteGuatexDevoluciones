@@ -8,9 +8,30 @@ public class E_ActualizarImpresion {
 
     private String noguia;
     private String ip;
-    private String usuario; 
+    private String usuario;
     private String fechaImpresion;
     private String tipoGuia;
+    private int numeroSolucion;
+
+    public E_ActualizarImpresion() {
+    }
+
+    public E_ActualizarImpresion(String noguia, String ip, String usuario, String fechaImpresion, String tipoGuia, int numeroSolucion) {
+        this.noguia = noguia;
+        this.ip = ip;
+        this.usuario = usuario;
+        this.fechaImpresion = fechaImpresion;
+        this.tipoGuia = tipoGuia;
+        this.numeroSolucion = numeroSolucion;
+    }
+
+    public int getNumeroSolucion() {
+        return numeroSolucion;
+    }
+
+    public void setNumeroSolucion(int numeroSolucion) {
+        this.numeroSolucion = numeroSolucion;
+    }
 
     public String getTipoGuia() {
         return tipoGuia;
@@ -19,7 +40,6 @@ public class E_ActualizarImpresion {
     public void setTipoGuia(String tipoGuia) {
         this.tipoGuia = tipoGuia;
     }
-    
 
     public String getUsuario() {
         return usuario;

@@ -229,7 +229,7 @@ public class ImpresionesPendientes {
                 StringBuilder datosGuia = zpl.generaZPLSolucion(guia, usuario, fechaHoraImpresion);
                 //System.out.println(">> ZPL: \n" + datosGuia + "\n<<\n");
                 if (new G_Impresora().imprimirGuia(ipImpresora, datosGuia)) {
-                    String impreso = new G_ConsultasBD().actualizarEstadoImpresion(guia.getNumeroGuia(), ipImpresora, usuario, fechaHoraImpresion, guia.getTipoGuia());
+                    String impreso = new G_ConsultasBD().actualizarEstadoImpresion(guia, ipImpresora, usuario, fechaHoraImpresion);
                     if (!impreso.equals("OK")) {
                         ArchivoLogs.getInstance().grabaLogFileAdministrador("------ Error de actualización ----> guía solución: " + guia.getNumeroGuia(), true);
                         System.out.println("Error de actualización ----> guía solución: " + guia.getNumeroGuia());
@@ -261,7 +261,7 @@ public class ImpresionesPendientes {
                         contador++;
                     }
                     if (impExitosas == contador) {
-                        String impreso = new G_ConsultasBD().actualizarEstadoImpresion(guia.getNumeroGuia(), ipImpresora, "", null, guia.getTipoGuia());
+                        String impreso = new G_ConsultasBD().actualizarEstadoImpresion(guia, ipImpresora, "", null);
                         if (!impreso.equals("OK")) {
                             System.out.println("Error de actualización ----> guía: " + guia.getNumeroGuia());
                         } else {
@@ -273,7 +273,7 @@ public class ImpresionesPendientes {
                     StringBuilder datosGuia = zpl.generaZPLDevolucion(guia, 1, guia.getNumeroGuia());
                     //System.out.println(">> ZPL: \n" + datosGuia + "\n<<\n");
                     if (new G_Impresora().imprimirGuia(ipImpresora, datosGuia)) {
-                        String impreso = new G_ConsultasBD().actualizarEstadoImpresion(guia.getNumeroGuia(), ipImpresora, "", null, guia.getTipoGuia());
+                        String impreso = new G_ConsultasBD().actualizarEstadoImpresion(guia, ipImpresora, "", null);
                         if (!impreso.equals("OK")) {
                             ArchivoLogs.getInstance().grabaLogFileAdministrador("------ Error de actualización ----> guía: " + guia.getNumeroGuia(), true);
                             System.out.println("Error de actualización ----> guía: " + guia.getNumeroGuia());

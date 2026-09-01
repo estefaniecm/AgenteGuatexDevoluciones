@@ -38,7 +38,7 @@ public class M_ZPLguia {
             System.out.println("----------");
             System.out.println(e.getLocalizedMessage());
         }
-        System.out.println(":D ZPL: " + ZPLGuiaImprimir.toString());
+        //System.out.println(":D ZPL: " + ZPLGuiaImprimir.toString());
         return ZPLGuiaImprimir;
     }
 
@@ -724,13 +724,13 @@ public class M_ZPLguia {
 
         zpl.append("^FO380,95^IME:IMG.GRF,1,1^FS");
 
-        zpl.append("^FO16,110^A0,N,25,25^FDNúmero de guia^FS");
+        zpl.append("^FO16,110^A0,N,25,25^FDNúmero de guía^FS");
         zpl.append("^FO15,145").append(GeneradorZPL.generarCampoGF(guia.getNumeroGuia(), 40)).append("^FS");
 
         zpl.append("^FO15,220^A0,N,24,24^FR^FDDATOS DE LA GUIA^FS");
         zpl.append("^FO0,245^GB590,2,2^FS");
 
-        zpl.append("^FO15,265^A0,N,20,20^FDRazó de No Entrega^FS");
+        zpl.append("^FO15,265^A0,N,20,20^FDRazón de No Entrega^FS");
         zpl.append("^FO15,292^A0,N,18,18^FB565,3,0,L,0^FD").append(guia.getRazonNoEntrega()).append("^FS");
 
         zpl.append("^FO15,350^A0,N,20,20^FDTipo de solución^FS");
@@ -756,14 +756,20 @@ public class M_ZPLguia {
         zpl.append("^FO15,1000^A0,N,16,16^FDImpreso: ").append(usuario).append("^FS");
         zpl.append("^FO260,1000^A0,N,16,16^FDFecha y hora de impresión: ").append(fechaImpresionFormateada).append("^FS");
 
-        zpl.append("^FO15,1040^A0,N,15,15^FB565,2,0,C,0^FDETIQUETA DE APOYO OPERATIVO INTERNO. NO SUSTITUYE LA GUIA ORIGINAL DEL ENVIO.^FS");
+        //Número de solución
+        zpl.append("^FO260,1020^A0,N,14,14^FDNo. Solución: ").append(guia.getSolucionNumero()).append("^FS");
 
-        zpl.append("^FO20,1080^GB550,100,3^FS");
-        zpl.append("^FO26,1086^GB538,88,2^FS");
+        //Reimpresiones
+        if (guia.getSolucionReimpresion() > 0) {
+        zpl.append("^FO445,1020^A0,N,14,14^FDNo. Reimpresión: ").append(guia.getSolucionReimpresion()).append("^FS");
+        }
+
+        zpl.append("^FO15,1050^A0,N,15,15^FB565,2,0,C,0^FDETIQUETA DE APOYO OPERATIVO INTERNO. NO SUSTITUYE LA GUIA ORIGINAL DEL ENVIO.^FS");
+
         zpl.append("^FO40,1110^AAN,N,30,30^FB530,1,0,C,0^FD").append(textoSolucion).append("^FS");
 
         zpl.append("^XZ");
-        System.out.println("ZPL: " + zpl.toString());
+        //System.out.println("ZPL: " + zpl.toString());
         return zpl;
     }
 
